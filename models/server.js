@@ -6,6 +6,7 @@ class Server {
     this.app = express();
     this.paths = {
       auth: "/api/auth",
+      client: "/api/clients",
     };
     this.middleware();
     this.router();
@@ -22,6 +23,7 @@ class Server {
 
   router() {
     this.app.use(this.paths.auth, require("../routes/auth"));
+    this.app.use(this.paths.client, require("../routes/clients"));
   }
 
   listen() {
