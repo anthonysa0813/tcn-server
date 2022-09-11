@@ -7,6 +7,7 @@ class Server {
     this.paths = {
       auth: "/api/auth",
       client: "/api/clients",
+      employee: "/api/employees",
     };
     this.middleware();
     this.router();
@@ -24,6 +25,7 @@ class Server {
   router() {
     this.app.use(this.paths.auth, require("../routes/auth"));
     this.app.use(this.paths.client, require("../routes/clients"));
+    this.app.use(this.paths.employee, require("../routes/employee"));
   }
 
   listen() {
