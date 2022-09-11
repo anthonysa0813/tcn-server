@@ -1,4 +1,3 @@
-const { response, request } = require("express");
 const Client = require("../models/clients");
 
 const existIdClient = async (id) => {

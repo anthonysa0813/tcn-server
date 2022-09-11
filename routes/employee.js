@@ -6,6 +6,7 @@ const {
   updateEmployee,
   deleteEmployee,
 } = require("../controllers/employee");
+const existIdEmployee = require("../helpers/isValidIdEmployee");
 const validateJWT = require("../helpers/validate-jwt");
 const validationFields = require("../middlewares/validationFields");
 
@@ -26,16 +27,33 @@ router.post(
       .isEmpty()
       .isEmail(),
     check("phone", "El phone es requido").not().isEmpty(),
-    check("cv", "el cv es requerido").not().isEmpty(),
     validationFields,
   ],
   postEmployee
 );
 
 // actualiza el status del employee
-router.put("/:id", updateEmployee);
+router.put(
+  "/:id",
+  [
+    validateJWT,
+    check("id", "el id no es un id válido").isMongoId(),
+    check("id", "el id no existe").custom(existIdEmployee),
+    validationFields,
+  ],
+  updateEmployee
+);
 
 // elimia el employee
-router.delete("/:id", deleteEmployee);
+router.delete(
+  "/:id",
+  [
+    validateJWT,
+    check("id", "el id no es un id válido").isMongoId(),
+    check("id", "el id no existe").custom(existIdEmployee),
+    validationFields,
+  ],
+  deleteEmployee
+);
 
 module.exports = router;

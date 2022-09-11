@@ -24,13 +24,21 @@ const EmployeeShema = mongoose.Schema({
   status: {
     type: Boolean,
     required: false,
-    default: false,
+    default: true,
   },
   cv: {
     type: String,
     require: [true, "EL cv es requerido"],
   },
 });
+
+EmployeeShema.methods.toJSON = function () {
+  const { _id: id, __v, ...rest } = this.toObject();
+  return {
+    id,
+    ...rest,
+  };
+};
 
 const model = mongoose.model("Employee", EmployeeShema);
 

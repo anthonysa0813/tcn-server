@@ -1,6 +1,6 @@
 const express = require("express");
 const connectDB = require("../db/connectDB");
-
+const fileUpload = require("express-fileupload");
 class Server {
   constructor() {
     this.app = express();
@@ -16,6 +16,13 @@ class Server {
 
   middleware() {
     this.app.use(express.json());
+
+    this.app.use(
+      fileUpload({
+        useTempFiles: true,
+        tempFileDir: "/tmp/",
+      })
+    );
   }
 
   connectMondoDB() {
