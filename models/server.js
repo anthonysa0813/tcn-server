@@ -1,6 +1,7 @@
 const express = require("express");
 const connectDB = require("../db/connectDB");
 const fileUpload = require("express-fileupload");
+const cors = require("cors");
 class Server {
   constructor() {
     this.app = express();
@@ -15,6 +16,7 @@ class Server {
   }
 
   middleware() {
+    this.app.use(cors());
     this.app.use(express.json());
 
     this.app.use(
