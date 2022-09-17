@@ -16,7 +16,7 @@ const router = Router();
 // Nota: debemos de agregar el token valido.
 
 // trae todos los clientes
-router.get("/", [validateJWT, validationFields], getClients);
+router.get("/", validationFields, getClients);
 
 // crea un nuevo clientes
 
