@@ -13,13 +13,12 @@ const validationFields = require("../middlewares/validationFields");
 const router = Router();
 
 // trae todos los employees
-router.get("/", [validateJWT, validationFields], getEmployees);
+router.get("/", [ validationFields], getEmployees);
 
 // crea un employee
 router.post(
   "/",
   [
-    validateJWT,
     check("name", "El nombre es requerido").not().isEmpty(),
     check("surnames", "Los apellidos son requeridos").not().isEmpty(),
     check("email", "El email está en blanco ó es inválido")
@@ -36,7 +35,6 @@ router.post(
 router.put(
   "/:id",
   [
-    validateJWT,
     check("id", "el id no es un id válido").isMongoId(),
     check("id", "el id no existe").custom(existIdEmployee),
     validationFields,
@@ -48,7 +46,6 @@ router.put(
 router.delete(
   "/:id",
   [
-    validateJWT,
     check("id", "el id no es un id válido").isMongoId(),
     check("id", "el id no existe").custom(existIdEmployee),
     validationFields,

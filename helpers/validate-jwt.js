@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
 const { request, response } = require("express");
 
-const validateJWT = (req = request, res = response, next) => {
-  const token = req.header("Authorization");
+const validateJWT = async(req = request, res = response, next) => {
+  const token =  req.header("Authorization");
   // verificación si están mandando el token
+  console.log("token", token)
   if (!token) {
     return res.status(401).json({
       message: "not exist token",
@@ -16,6 +17,7 @@ const validateJWT = (req = request, res = response, next) => {
 
     next();
   } catch (error) {
+    console.log(error)
     res.status(401).json({
       message: "Token no válido",
     });

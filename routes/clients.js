@@ -23,6 +23,7 @@ router.get("/", validationFields, getClients);
 router.post(
   "/",
   [
+    validateJWT,
     check("name", "el nombre es requerido").isString().not().isEmpty(),
     check("surnames", "los apellidos son requeridos")
       .isString()
@@ -63,7 +64,6 @@ router.delete(
 router.put(
   "/:id",
   [
-    validateJWT,
     check("id", "el id es inválido - MONGOID").isMongoId(),
     check("id", "El id es inválido").custom(existIdClient),
     validationFields,
