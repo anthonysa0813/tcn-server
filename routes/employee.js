@@ -5,6 +5,8 @@ const {
   postEmployee,
   updateEmployee,
   deleteEmployee,
+  addServiceToEmployee,
+  showServices,
 } = require("../controllers/employee");
 const existIdEmployee = require("../helpers/isValidIdEmployee");
 const validateJWT = require("../helpers/validate-jwt");
@@ -53,4 +55,10 @@ router.delete(
   deleteEmployee
 );
 
+// agregar un nuevo servicio
+router.post("/:idEmployee/:idService", addServiceToEmployee)
+
+
+// show services by idEmployee
+router.get("/:id", showServices)
 module.exports = router;

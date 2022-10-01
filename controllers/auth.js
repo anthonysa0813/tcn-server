@@ -4,7 +4,7 @@ const bcryptjs = require("bcryptjs");
 const generateJWT = require("../helpers/generate-jwt");
 
 const createUser = async (req = request, res = response) => {
-  const { email, password } = req.body;
+  const { email, password,role } = req.body;
 
   console.log({ email, password });
 
@@ -18,17 +18,14 @@ const createUser = async (req = request, res = response) => {
 
   // hashear el password
 
-  const user = await new User({ email, password, name: "", image: "" });
+  const user = await new User({ email, password, role, name: "", image: "", surnames: "", phone: "", callingCall: "", typeJob: "", cv: ""  });
 
   const salt = await bcryptjs.genSaltSync();
   user.password = await bcryptjs.hashSync(password, salt);
 
   await user.save();
 
-  res.json({
-    message: "post",
-    user,
-  });
+  res.status(201).json(user);
 };
 
 // devuelve todos los users

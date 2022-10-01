@@ -9,6 +9,8 @@ class Server {
       auth: "/api/auth",
       client: "/api/clients",
       employee: "/api/employees",
+      jobs: "/api/jobs",
+      services: "/api/services",
     };
     this.middleware();
     this.router();
@@ -35,6 +37,7 @@ class Server {
     this.app.use(this.paths.auth, require("../routes/auth"));
     this.app.use(this.paths.client, require("../routes/clients"));
     this.app.use(this.paths.employee, require("../routes/employee"));
+    this.app.use(this.paths.services, require("../routes/services"));
   }
 
   listen() {

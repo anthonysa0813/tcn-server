@@ -21,15 +21,29 @@ const EmployeeShema = mongoose.Schema({
     type: String,
     required: false,
   },
-  status: {
-    type: Boolean,
-    required: false,
-    default: true,
-  },
   cv: {
     type: String,
-    require: [true, "EL cv es requerido"],
+    require: false,
   },
+  callingCall: {
+    type: String, 
+    require: [true, "el codigo es requerido"]
+  },
+  country : {
+    type: String, 
+    require: [true, "El país es requerido"],
+  },
+  typeJob: {
+    type: String,
+    enum: ["PRESENCIAL", "HIBRIDO", "REMOTO", ""],
+    default: "",
+    required: false
+  },
+  service: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Service",
+    required: false
+  }],
 });
 
 EmployeeShema.methods.toJSON = function () {
