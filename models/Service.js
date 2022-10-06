@@ -19,11 +19,11 @@ const ServiceSchema = new Schema({
         type: String,
         required: false
     },
-    employee: {
-        type: Schema.Types.ObjectId,
-        ref: "Employee",
-        required: false
-    }
+    employees: [{
+            type: Schema.Types.ObjectId,
+            ref: "Employee",
+            required: false
+        }]
     
 }, {
     timestamps: true,

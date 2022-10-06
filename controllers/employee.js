@@ -2,10 +2,11 @@ const { request, response } = require("express");
 const cloudinaryFunc = require("../lib/cloudinary");
 const Employee = require("../models/employee");
 const Service = require("../models/Service");
+const bcrypt = require("bcryptjs");
+const generateJWT = require("../helpers/generate-jwt");
 
 const getEmployees = async (req = request, res = response) => {
   const users = await Employee.find().populate("service");
-
   res.json(users);
 };
 
@@ -13,6 +14,17 @@ const getEmployees = async (req = request, res = response) => {
 
 const postEmployee = async (req = request, res = response) => {
   const body = req.body;
+
+  // ver si existe el email
+  let { email, password } = body
+  const employee = await Employee.findOne({ email })
+  if(employee) {
+    return res.status(400).json({ message: "El email ya está registrado"})
+  }
+
+  // hashear la contraseña
+  const salt = await bcrypt.genSaltSync();
+  password = await bcrypt.hashSync(password, salt);
 
   if (!req.files || Object.keys(req.files).length === 0 || !req.files.cv) {
     res.status(400).send("No hay archivos que subir");
@@ -37,6 +49,7 @@ const postEmployee = async (req = request, res = response) => {
     message: "",
     status: true,
     ...body,
+    password,
     cv: secure_url,
   };
 
@@ -59,31 +72,35 @@ const updateEmployee = async (req = request, res = response) => {
   res.json({
     message: "usuario actualizado",
   });
-};
+};  
+
 
 // add new Service to Employee
 const addServiceToEmployee = async (req = request, res = response) => {
   const {idEmployee, idService} = req.params;
-  console.log({idEmployee, idService});
   const employee = await Employee.findById(idEmployee);
   const service = await Service.findById(idService);
 
-  if(employee.service.includes(idService)) {
-    res.status(400).json({message: "el servicio ya está incluido"})
-  }
-  employee.service = [...employee.service, idService];
-  console.log(employee)
-  employee.save()
+  // if(employee.service.includes(idService)) {
+  //   return res.status(400).json({message: "el servicio ya está incluido"})
+  // }
   if(!employee) {
       return res.status(400).json({message: "no se encontró al usuario"})
   };
   if(!service) {
     return res.status(400).json({message: "no se encontró al servicio"})
   };
+  employee.service = [...employee.service, idService];
+  service.employees = [...service.employees, idEmployee];
+  employee.save()
+  service.save()
 
   // await Employee.findByIdAndUpdate({service: idService});
    res.status(200).json(employee);
 };
+
+
+
 // elimina el employee
 const deleteEmployee = async (req = request, res = response) => {
   const { id } = req.params;
@@ -100,17 +117,55 @@ const showServices = async (req = request, res = response) => {
     if(!employee){
       return res.status(404).json({ message: "El usuario no se encontró	"})
     }
-    console.log(employee); 
+   
     res.status(200).json(employee)
 
 };
 
+const logingEmployee = async (req = request, res = response) => {
+  const {body} = req;
+  const { email, password} = body
+  console.log({email, password})
+  // verificar si el usuario existe
+  const employee = await Employee.findOne({ email: email})
+  if(!employee) {
+    return res.status(400).json({ message: "No Existe el usuario"});
+  }
 
+
+  // verificar la contraseña
+  const validPassword =  await bcrypt.compareSync(password, employee.password)  
+  if (!validPassword) {
+    return res.status(400).json({
+      message: "the password is incorrect",
+    });
+  }
+
+  const token = await generateJWT(employee.id)
+  res.json({
+    employee,
+    token,
+  });
+};
+
+const getEmployeesById = async (req = request, res = response) => {
+    const {id} = req.params
+    if(!id) {
+      return res.status(400).json({message: "Es necesario que mandes el Id"})
+    }
+    const employee = await Employee.findById(id).populate("service");
+    return res.status(200).json(employee)
+}
+
+
+  
 module.exports = {
   getEmployees,
   postEmployee,
   updateEmployee,
   deleteEmployee,
   addServiceToEmployee,
-  showServices
+  showServices,
+  logingEmployee,
+  getEmployeesById
 };

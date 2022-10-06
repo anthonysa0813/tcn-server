@@ -7,6 +7,7 @@ class Server {
     this.app = express();
     this.paths = {
       auth: "/api/auth",
+      authEmployee: "/api/auth/employee",
       client: "/api/clients",
       employee: "/api/employees",
       jobs: "/api/jobs",
@@ -34,10 +35,11 @@ class Server {
   }
 
   router() {
-    this.app.use(this.paths.auth, require("../routes/auth"));
+    this.app.use(this.paths.auth, require("../routes/auth/auth"));
     this.app.use(this.paths.client, require("../routes/clients"));
     this.app.use(this.paths.employee, require("../routes/employee"));
     this.app.use(this.paths.services, require("../routes/services"));
+    this.app.use(this.paths.authEmployee, require("../routes/auth/employee"));
   }
 
   listen() {

@@ -7,6 +7,8 @@ const {
   deleteEmployee,
   addServiceToEmployee,
   showServices,
+  logingEmployee,
+  getEmployeesById,
 } = require("../controllers/employee");
 const existIdEmployee = require("../helpers/isValidIdEmployee");
 const validateJWT = require("../helpers/validate-jwt");
@@ -14,8 +16,12 @@ const validationFields = require("../middlewares/validationFields");
 
 const router = Router();
 
+
+
 // trae todos los employees
 router.get("/", [ validationFields], getEmployees);
+// traer un employee by Id
+router.get("/:id", getEmployeesById)
 
 // crea un employee
 router.post(
@@ -57,6 +63,8 @@ router.delete(
 
 // agregar un nuevo servicio
 router.post("/:idEmployee/:idService", addServiceToEmployee)
+
+
 
 
 // show services by idEmployee

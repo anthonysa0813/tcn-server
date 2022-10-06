@@ -6,10 +6,10 @@ const {
   loginUser,
   updateUser,
   deleteUser,
-} = require("../controllers/auth");
-const isValidIdUser = require("../helpers/isValidID");
-const validateJWT = require("../helpers/validate-jwt");
-const validationFields = require("../middlewares/validationFields");
+} = require("../../controllers/auth");
+const isValidIdUser = require("../../helpers/isValidID");
+const validateJWT = require("../../helpers/validate-jwt");
+const validationFields = require("../../middlewares/validationFields");
 
 const router = Router();
 

@@ -11,11 +11,16 @@ const EmployeeShema = mongoose.Schema({
   },
   email: {
     type: String,
+    unique: true,
     required: [true, "El email es requerido"],
   },
   phone: {
     type: String,
     required: [true, "El teléfono es requerido"],
+  },
+  password: {
+    type: String,
+    required: [true, "El password es requerido"],
   },
   message: {
     type: String,
@@ -34,16 +39,20 @@ const EmployeeShema = mongoose.Schema({
     require: [true, "El país es requerido"],
   },
   typeJob: {
-    type: String,
-    enum: ["PRESENCIAL", "HIBRIDO", "REMOTO", ""],
-    default: "",
-    required: false
-  },
+      type: String,
+      enum: ["PRESENCIAL", "HIBRIDO", "REMOTO", ""],
+      default: "",
+      required: false
+    },
   service: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "Service",
     required: false
   }],
+  languages: [{
+    type: String,
+    required: false,
+  }]
 });
 
 EmployeeShema.methods.toJSON = function () {
