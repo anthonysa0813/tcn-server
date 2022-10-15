@@ -10,16 +10,14 @@ const getEmployees = async (req = request, res = response) => {
   res.json(users);
 };
 
-
-
 const postEmployee = async (req = request, res = response) => {
   const body = req.body;
 
   // ver si existe el email
-  let { email, password } = body
-  const employee = await Employee.findOne({ email })
-  if(employee) {
-    return res.status(400).json({ message: "El email ya está registrado"})
+  let { email, password } = body;
+  const employee = await Employee.findOne({ email });
+  if (employee) {
+    return res.status(400).json({ message: "El email ya está registrado" });
   }
 
   // hashear la contraseña
@@ -72,34 +70,31 @@ const updateEmployee = async (req = request, res = response) => {
   res.json({
     message: "usuario actualizado",
   });
-};  
-
+};
 
 // add new Service to Employee
 const addServiceToEmployee = async (req = request, res = response) => {
-  const {idEmployee, idService} = req.params;
+  const { idEmployee, idService } = req.params;
   const employee = await Employee.findById(idEmployee);
   const service = await Service.findById(idService);
 
   // if(employee.service.includes(idService)) {
   //   return res.status(400).json({message: "el servicio ya está incluido"})
   // }
-  if(!employee) {
-      return res.status(400).json({message: "no se encontró al usuario"})
-  };
-  if(!service) {
-    return res.status(400).json({message: "no se encontró al servicio"})
-  };
+  if (!employee) {
+    return res.status(400).json({ message: "no se encontró al usuario" });
+  }
+  if (!service) {
+    return res.status(400).json({ message: "no se encontró al servicio" });
+  }
   employee.service = [...employee.service, idService];
   service.employees = [...service.employees, idEmployee];
-  employee.save()
-  service.save()
+  employee.save();
+  service.save();
 
   // await Employee.findByIdAndUpdate({service: idService});
-   res.status(200).json(employee);
+  res.status(200).json(employee);
 };
-
-
 
 // elimina el employee
 const deleteEmployee = async (req = request, res = response) => {
@@ -112,36 +107,34 @@ const deleteEmployee = async (req = request, res = response) => {
 
 // show services by employee
 const showServices = async (req = request, res = response) => {
-    const { id } = req.params;
-    const employee = await Employee.findById(id).populate("service");
-    if(!employee){
-      return res.status(404).json({ message: "El usuario no se encontró	"})
-    }
-   
-    res.status(200).json(employee)
+  const { id } = req.params;
+  const employee = await Employee.findById(id).populate("service");
+  if (!employee) {
+    return res.status(404).json({ message: "El usuario no se encontró	" });
+  }
 
+  res.status(200).json(employee);
 };
 
 const logingEmployee = async (req = request, res = response) => {
-  const {body} = req;
-  const { email, password} = body
-  console.log({email, password})
+  const { body } = req;
+  const { email, password } = body;
+  console.log({ email, password });
   // verificar si el usuario existe
-  const employee = await Employee.findOne({ email: email})
-  if(!employee) {
-    return res.status(400).json({ message: "No Existe el usuario"});
+  const employee = await Employee.findOne({ email: email });
+  if (!employee) {
+    return res.status(400).json({ message: "No Existe el usuario" });
   }
 
-
   // verificar la contraseña
-  const validPassword =  await bcrypt.compareSync(password, employee.password)  
+  const validPassword = await bcrypt.compareSync(password, employee.password);
   if (!validPassword) {
     return res.status(400).json({
       message: "the password is incorrect",
     });
   }
 
-  const token = await generateJWT(employee.id)
+  const token = await generateJWT(employee.id);
   res.json({
     employee,
     token,
@@ -149,16 +142,27 @@ const logingEmployee = async (req = request, res = response) => {
 };
 
 const getEmployeesById = async (req = request, res = response) => {
-    const {id} = req.params
-    if(!id) {
-      return res.status(400).json({message: "Es necesario que mandes el Id"})
-    }
-    const employee = await Employee.findById(id).populate("service");
-    return res.status(200).json(employee)
-}
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({ message: "Es necesario que mandes el Id" });
+  }
+  const employee = await Employee.findById(id).populate("service");
+  return res.status(200).json(employee);
+};
 
+// activar al usuario (employee)
+const activeEmployee = async (req = request, res = response) => {
+  const { idEmployee } = req.params;
+  const employee = await Employee.findById(idEmployee);
+  if (!employee) {
+    return res.status(400).json({ message: "El usuario no se encontró" });
+  }
 
-  
+  employee.status = true;
+  employee.save();
+  res.json(employee);
+};
+
 module.exports = {
   getEmployees,
   postEmployee,
@@ -167,5 +171,6 @@ module.exports = {
   addServiceToEmployee,
   showServices,
   logingEmployee,
-  getEmployeesById
+  getEmployeesById,
+  activeEmployee,
 };

@@ -31,28 +31,63 @@ const EmployeeShema = mongoose.Schema({
     require: false,
   },
   callingCall: {
-    type: String, 
-    require: [true, "el codigo es requerido"]
+    type: String,
+    require: [true, "el codigo es requerido"],
   },
-  country : {
-    type: String, 
+  country: {
+    type: String,
     require: [true, "El país es requerido"],
   },
   typeJob: {
-      type: String,
-      enum: ["PRESENCIAL", "HIBRIDO", "REMOTO", ""],
-      default: "",
-      required: false
+    type: String,
+    enum: ["PRESENCIAL", "HIBRIDO", "REMOTO", ""],
+    default: "",
+    required: false,
+  },
+  service: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Service",
+      required: false,
     },
-  service: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Service",
-    required: false
-  }],
-  languages: [{
+  ],
+  languages: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Language",
+      required: false,
+    },
+  ],
+  linkedin: {
     type: String,
     required: false,
-  }]
+  },
+  github: {
+    type: String,
+    required: false,
+  },
+  experiences: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Experience",
+      required: false,
+    },
+  ],
+  skills: [
+    {
+      type: String,
+      required: false,
+    },
+  ],
+  findSocial: {
+    type: String,
+    required: false,
+  },
+  status: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
 });
 
 EmployeeShema.methods.toJSON = function () {

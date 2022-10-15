@@ -12,6 +12,8 @@ class Server {
       employee: "/api/employees",
       jobs: "/api/jobs",
       services: "/api/services",
+      language: "/api/language",
+      profesional: "/api/profesional",
     };
     this.middleware();
     this.router();
@@ -40,6 +42,8 @@ class Server {
     this.app.use(this.paths.employee, require("../routes/employee"));
     this.app.use(this.paths.services, require("../routes/services"));
     this.app.use(this.paths.authEmployee, require("../routes/auth/employee"));
+    this.app.use(this.paths.language, require("../routes/languages"));
+    this.app.use(this.paths.profesional, require("../routes/profesional"));
   }
 
   listen() {

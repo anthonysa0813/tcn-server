@@ -9,6 +9,7 @@ const {
   showServices,
   logingEmployee,
   getEmployeesById,
+  activeEmployee,
 } = require("../controllers/employee");
 const existIdEmployee = require("../helpers/isValidIdEmployee");
 const validateJWT = require("../helpers/validate-jwt");
@@ -16,12 +17,10 @@ const validationFields = require("../middlewares/validationFields");
 
 const router = Router();
 
-
-
 // trae todos los employees
-router.get("/", [ validationFields], getEmployees);
+router.get("/", [validationFields], getEmployees);
 // traer un employee by Id
-router.get("/:id", getEmployeesById)
+router.get("/:id", getEmployeesById);
 
 // crea un employee
 router.post(
@@ -62,11 +61,11 @@ router.delete(
 );
 
 // agregar un nuevo servicio
-router.post("/:idEmployee/:idService", addServiceToEmployee)
+router.post("/:idEmployee/:idService", addServiceToEmployee);
 
-
-
+// activar al usuario (employee)
+router.put("/:idEmployee/active", activeEmployee);
 
 // show services by idEmployee
-router.get("/:id", showServices)
+router.get("/:id", showServices);
 module.exports = router;
