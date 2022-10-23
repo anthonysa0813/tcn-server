@@ -14,6 +14,8 @@ class Server {
       services: "/api/services",
       language: "/api/language",
       profesional: "/api/profesional",
+      experience: "/api/experiences",
+      knoledge: "/api/knoledge",
     };
     this.middleware();
     this.router();
@@ -44,6 +46,8 @@ class Server {
     this.app.use(this.paths.authEmployee, require("../routes/auth/employee"));
     this.app.use(this.paths.language, require("../routes/languages"));
     this.app.use(this.paths.profesional, require("../routes/profesional"));
+    this.app.use(this.paths.experience, require("../routes/experience"));
+    this.app.use(this.paths.knoledge, require("../routes/knoledge"));
   }
 
   listen() {

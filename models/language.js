@@ -6,9 +6,14 @@ const LanguageSchema = mongoose.Schema({
     required: [true, "el nombre del idioma es requerido"],
     trim: true,
   },
-  level: {
+  levelWriter: {
     type: String,
-    required: [true, "el level es requerido"],
+    required: [true, "el nivel en escritura es requerido"],
+    trim: true,
+  },
+  levelOral: {
+    type: String,
+    required: [true, "el nivel oral es requerido"],
     trim: true,
   },
   employee: {

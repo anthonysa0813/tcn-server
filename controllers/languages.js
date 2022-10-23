@@ -21,7 +21,8 @@ const createLang = async (req = request, res = response) => {
   // crear el lenguage con el employee
   const lang = await new Language({
     lang: body.lang,
-    level: body.level,
+    levelWriter: body.levelWriter,
+    levelOral: body.levelOral,
     employee: idEmployee,
   });
   lang.save();
@@ -42,22 +43,51 @@ const getLangToEmployee = async (req = request, res = response) => {
   res.status(200).json(languages);
 };
 
+// traer un único languaje por employee
+const getUniqueLang = async (req = request, res = response) => {
+  const { idLang } = req.params;
+  const language = await Language.findById(idLang);
+  if (!language) {
+    return res.status(404).json({
+      message: "El idioma no se encuentra en la base de datos",
+    });
+  }
+  res.json(language);
+};
+
 // actualizar
 const putLangByEmployee = async (req = request, res = response) => {
   const { idEmployee, idLang } = req.params;
   const body = req.body;
-  const language = await Language.findById(idLang)
-    .where("employee")
-    .equals(idEmployee);
+  console.log(idLang);
+  const language = await Language.find().where("employee").equals(idEmployee);
+  console.log(language);
+  if (!language) {
+    return res.status(400).json({
+      message: "El idioma no se encuentra en la base de datos",
+    });
+  }
+  res.json(language);
+
+  // await Language.findByIdAndUpdate(idLang, body);
+  // return res.status(200).json({
+  //   message: "el idioma fue actualizado satisfactoriamente",
+  // });
+};
+
+// eliminar
+const deleteLang = async (req = request, res = response) => {
+  const { idLang } = req.params;
+  const language = await Language.findById(idLang);
   if (!language) {
     return res.status(400).json({
       message: "El idioma no se encuentra en la base de datos",
     });
   }
 
-  await Language.findByIdAndUpdate(idLang, body);
-  return res.status(200).json({
-    message: "el idioma fue actualizado satisfactoriamente",
+  await Language.findByIdAndDelete(idLang);
+  res.json({
+    message: "El idioma ha sido eliminado",
   });
 };
 
@@ -66,4 +96,6 @@ module.exports = {
   createLang,
   getLangToEmployee,
   putLangByEmployee,
+  deleteLang,
+  getUniqueLang,
 };

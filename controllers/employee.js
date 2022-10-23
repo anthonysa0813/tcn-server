@@ -119,7 +119,6 @@ const showServices = async (req = request, res = response) => {
 const logingEmployee = async (req = request, res = response) => {
   const { body } = req;
   const { email, password } = body;
-  console.log({ email, password });
   // verificar si el usuario existe
   const employee = await Employee.findOne({ email: email });
   if (!employee) {
