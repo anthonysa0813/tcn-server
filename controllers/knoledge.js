@@ -40,9 +40,24 @@ const deleteKnoledge = async (req = request, res = response) => {
     message: "La habilidad ha sido eliminada",
   });
 };
+const getAllKnowledgeByFilter = async (req = request, res = response) => {
+  try {
+    const query = req.query;
+    const { hability } = query;
+    const employees = await Knoledge.find()
+      .where("name")
+      .equals(hability)
+      .populate("employee");
+
+    return res.json(employees);
+  } catch (error) {
+    return res.json({ message: "Hubo un error" });
+  }
+};
 
 module.exports = {
   createKnoledge,
   deleteKnoledge,
   getAllKnowledge,
+  getAllKnowledgeByFilter,
 };

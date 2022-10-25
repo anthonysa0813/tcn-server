@@ -6,103 +6,140 @@ const bcrypt = require("bcryptjs");
 const generateJWT = require("../helpers/generate-jwt");
 
 const getEmployees = async (req = request, res = response) => {
-  const users = await Employee.find().populate("service");
-  res.json(users);
+  try {
+    const users = await Employee.find().populate("service");
+    res.json(users);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Hubo un error",
+    });
+  }
 };
 
 const postEmployee = async (req = request, res = response) => {
-  const body = req.body;
+  try {
+    const body = req.body;
 
-  // ver si existe el email
-  let { email, password } = body;
-  const employee = await Employee.findOne({ email });
-  if (employee) {
-    return res.status(400).json({ message: "El email ya está registrado" });
-  }
+    // ver si existe el email
+    let { email, password } = body;
+    const employee = await Employee.findOne({ email });
+    if (employee) {
+      return res.status(400).json({ message: "El email ya está registrado" });
+    }
 
-  // hashear la contraseña
-  const salt = await bcrypt.genSaltSync();
-  password = await bcrypt.hashSync(password, salt);
+    // hashear la contraseña
+    const salt = await bcrypt.genSaltSync();
+    password = await bcrypt.hashSync(password, salt);
 
-  if (!req.files || Object.keys(req.files).length === 0 || !req.files.cv) {
-    res.status(400).send("No hay archivos que subir");
-    return;
-  }
+    if (!req.files || Object.keys(req.files).length === 0 || !req.files.cv) {
+      res.status(400).send("No hay archivos que subir");
+      return;
+    }
 
-  const { cv } = req.files;
-  // revisar si son pdf o word
-  const extensionFile = cv.name.split(".");
+    const { cv } = req.files;
+    // revisar si son pdf o word
+    const extensionFile = cv.name.split(".");
 
-  const validatesExtensions = ["pdf", "docx"];
-  if (!validatesExtensions.includes(extensionFile[extensionFile.length - 1])) {
-    res.status(400).json({
-      message: `la extensión no es válida, solo aceptamos archivos ${validatesExtensions}`,
+    const validatesExtensions = ["pdf", "docx"];
+    if (
+      !validatesExtensions.includes(extensionFile[extensionFile.length - 1])
+    ) {
+      res.status(400).json({
+        message: `la extensión no es válida, solo aceptamos archivos ${validatesExtensions}`,
+      });
+    }
+
+    // guardar el archivo en cloudinary
+    const { secure_url } = await cloudinaryFunc(cv.tempFilePath);
+
+    const data = {
+      message: "",
+      status: true,
+      ...body,
+      password,
+      cv: secure_url,
+    };
+
+    // guardar employee en la DB
+    const user = new Employee(data);
+
+    await user.save();
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Hubo un error",
     });
   }
-
-  // guardar el archivo en cloudinary
-  const { secure_url } = await cloudinaryFunc(cv.tempFilePath);
-
-  const data = {
-    message: "",
-    status: true,
-    ...body,
-    password,
-    cv: secure_url,
-  };
-
-  // guardar employee en la DB
-  const user = new Employee(data);
-
-  await user.save();
-
-  res.status(200).json(user);
 };
 
 // actualiza el estatus a false
 const updateEmployee = async (req = request, res = response) => {
-  const { id } = req.params;
-  const { body } = req;
-  const user = await Employee.findById(id);
+  try {
+    const { id } = req.params;
+    const { body } = req;
+    const user = await Employee.findById(id);
 
-  const employee = await Employee.findByIdAndUpdate(id, body);
+    const employee = await Employee.findByIdAndUpdate(id, body);
 
-  res.json({
-    message: "usuario actualizado",
-  });
+    return res.json({
+      message: "usuario actualizado",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Hubo un error",
+    });
+  }
 };
 
 // add new Service to Employee
 const addServiceToEmployee = async (req = request, res = response) => {
-  const { idEmployee, idService } = req.params;
-  const employee = await Employee.findById(idEmployee);
-  const service = await Service.findById(idService);
+  try {
+    const { idEmployee, idService } = req.params;
+    const employee = await Employee.findById(idEmployee);
+    const service = await Service.findById(idService);
 
-  // if(employee.service.includes(idService)) {
-  //   return res.status(400).json({message: "el servicio ya está incluido"})
-  // }
-  if (!employee) {
-    return res.status(400).json({ message: "no se encontró al usuario" });
-  }
-  if (!service) {
-    return res.status(400).json({ message: "no se encontró al servicio" });
-  }
-  employee.service = [...employee.service, idService];
-  service.employees = [...service.employees, idEmployee];
-  employee.save();
-  service.save();
+    // if(employee.service.includes(idService)) {
+    //   return res.status(400).json({message: "el servicio ya está incluido"})
+    // }
+    if (!employee) {
+      return res.status(400).json({ message: "no se encontró al usuario" });
+    }
+    if (!service) {
+      return res.status(400).json({ message: "no se encontró al servicio" });
+    }
+    employee.service = [...employee.service, idService];
+    service.employees = [...service.employees, idEmployee];
+    employee.save();
+    service.save();
 
-  // await Employee.findByIdAndUpdate({service: idService});
-  res.status(200).json(employee);
+    // await Employee.findByIdAndUpdate({service: idService});
+    return res.status(200).json(employee);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Hubo un error",
+    });
+  }
 };
 
 // elimina el employee
 const deleteEmployee = async (req = request, res = response) => {
-  const { id } = req.params;
-  await Employee.findByIdAndDelete(id);
-  res.json({
-    message: "usuario eliminado",
-  });
+  try {
+    const { id } = req.params;
+    await Employee.findByIdAndDelete(id);
+    return res.json({
+      message: "usuario eliminado",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Hubo un error",
+    });
+  }
 };
 
 // show services by employee
@@ -117,49 +154,70 @@ const showServices = async (req = request, res = response) => {
 };
 
 const logingEmployee = async (req = request, res = response) => {
-  const { body } = req;
-  const { email, password } = body;
-  // verificar si el usuario existe
-  const employee = await Employee.findOne({ email: email });
-  if (!employee) {
-    return res.status(400).json({ message: "No Existe el usuario" });
-  }
+  try {
+    const { body } = req;
+    const { email, password } = body;
+    // verificar si el usuario existe
+    const employee = await Employee.findOne({ email: email });
+    if (!employee) {
+      return res.status(400).json({ message: "No Existe el usuario" });
+    }
 
-  // verificar la contraseña
-  const validPassword = await bcrypt.compareSync(password, employee.password);
-  if (!validPassword) {
-    return res.status(400).json({
-      message: "the password is incorrect",
+    // verificar la contraseña
+    const validPassword = await bcrypt.compareSync(password, employee.password);
+    if (!validPassword) {
+      return res.status(400).json({
+        message: "the password is incorrect",
+      });
+    }
+
+    const token = await generateJWT(employee.id);
+    return res.json({
+      employee,
+      token,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Hubo un error",
     });
   }
-
-  const token = await generateJWT(employee.id);
-  res.json({
-    employee,
-    token,
-  });
 };
 
 const getEmployeesById = async (req = request, res = response) => {
-  const { id } = req.params;
-  if (!id) {
-    return res.status(400).json({ message: "Es necesario que mandes el Id" });
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: "Es necesario que mandes el Id" });
+    }
+    const employee = await Employee.findById(id).populate("service");
+    return res.status(200).json(employee);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Hubo un error",
+    });
   }
-  const employee = await Employee.findById(id).populate("service");
-  return res.status(200).json(employee);
 };
 
 // activar al usuario (employee)
 const activeEmployee = async (req = request, res = response) => {
-  const { idEmployee } = req.params;
-  const employee = await Employee.findById(idEmployee);
-  if (!employee) {
-    return res.status(400).json({ message: "El usuario no se encontró" });
-  }
+  try {
+    const { idEmployee } = req.params;
+    const employee = await Employee.findById(idEmployee);
+    if (!employee) {
+      return res.status(400).json({ message: "El usuario no se encontró" });
+    }
 
-  employee.status = true;
-  employee.save();
-  res.json(employee);
+    employee.status = true;
+    employee.save();
+    return res.json(employee);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Hubo un error",
+    });
+  }
 };
 
 module.exports = {

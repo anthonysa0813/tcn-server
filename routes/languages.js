@@ -6,11 +6,13 @@ const {
   putLangByEmployee,
   deleteLang,
   getUniqueLang,
+  searchLanguagesByFilter,
 } = require("../controllers/languages");
 
 const router = Router();
 
 router.get("/", getLangs);
+router.get("/filter", searchLanguagesByFilter);
 
 // trear los lenguajes por usuario
 router.get("/all/:idEmployee", getLangToEmployee);
