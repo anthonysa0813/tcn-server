@@ -39,23 +39,23 @@ const postEmployee = async (req = request, res = response) => {
 
     const { cv } = req.files;
     // revisar si son pdf o word
-    const extensionFile = cv.name.split(".");
+    const extensionFile = cv.name.split(".")[1]; // extension del archivo
 
     const validatesExtensions = ["pdf", "docx"];
-    if (
-      !validatesExtensions.includes(extensionFile[extensionFile.length - 1])
-    ) {
-      res.status(400).json({
+    console.log("extensionFile", extensionFile);
+    if (!validatesExtensions.includes(extensionFile)) {
+      return res.status(400).json({
         message: `la extensión no es válida, solo aceptamos archivos ${validatesExtensions}`,
       });
     }
 
     // guardar el archivo en cloudinary
     const { secure_url } = await cloudinaryFunc(cv.tempFilePath);
-
+    // console.log("cv", cv.tempFilePath);
+    // console.log("secure_url", secure_url);
     const data = {
       message: "",
-      status: true,
+      status: false,
       ...body,
       password,
       cv: secure_url,
@@ -95,7 +95,7 @@ const updateEmployee = async (req = request, res = response) => {
   }
 };
 
-// add new Service to Employee
+// add new Service to Employee ( agregar una postulación a un employee)
 const addServiceToEmployee = async (req = request, res = response) => {
   try {
     const { idEmployee, idService } = req.params;
@@ -111,13 +111,21 @@ const addServiceToEmployee = async (req = request, res = response) => {
     if (!service) {
       return res.status(400).json({ message: "no se encontró al servicio" });
     }
-    employee.service = [...employee.service, idService];
-    service.employees = [...service.employees, idEmployee];
-    employee.save();
-    service.save();
 
-    // await Employee.findByIdAndUpdate({service: idService});
-    return res.status(200).json(employee);
+    console.log(employee.servicesId);
+
+    if (employee.servicesId.includes(idService)) {
+      return res
+        .status(400)
+        .json({ messageError: "Ya haz aplicado anteriormente a este puesto" });
+    } else {
+      employee.service = [...employee.service, idService];
+      employee.servicesId = [...employee.servicesId, idService];
+      service.employees = [...service.employees, idEmployee];
+      employee.save();
+      service.save();
+      return res.status(200).json(employee);
+    }
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -167,7 +175,7 @@ const logingEmployee = async (req = request, res = response) => {
     const validPassword = await bcrypt.compareSync(password, employee.password);
     if (!validPassword) {
       return res.status(400).json({
-        message: "the password is incorrect",
+        message: "La contraseña es incorrecta",
       });
     }
 

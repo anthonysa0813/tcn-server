@@ -1,6 +1,7 @@
 const { request, response } = require("express");
 const User = require("../models/auth");
 const bcryptjs = require("bcryptjs");
+// const Cookies = require("js-cookie");
 const generateJWT = require("../helpers/generate-jwt");
 
 const createUser = async (req = request, res = response) => {
@@ -28,6 +29,7 @@ const createUser = async (req = request, res = response) => {
     });
     const salt = await bcryptjs.genSaltSync();
     user.password = await bcryptjs.hashSync(password, salt);
+    console.log("user auth", user);
     await user.save();
     return res.status(201).json(user);
   } catch (error) {
@@ -73,6 +75,7 @@ const loginUser = async (req = request, res = response) => {
 
     // generar el jwt
     const token = await generateJWT(user._id);
+    // Cookies.set("token", token, { expires: 7 });
 
     res.status(200).json({ user, token });
   } catch (error) {

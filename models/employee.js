@@ -51,6 +51,12 @@ const EmployeeShema = mongoose.Schema({
       required: false,
     },
   ],
+  servicesId: [
+    {
+      type: String,
+      required: false,
+    },
+  ],
   languages: [
     {
       type: mongoose.Schema.Types.ObjectId,
