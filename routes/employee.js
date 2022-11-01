@@ -10,6 +10,8 @@ const {
   logingEmployee,
   getEmployeesById,
   activeEmployee,
+  sendEmailForgetPassword,
+  resetPassword,
 } = require("../controllers/employee");
 const existIdEmployee = require("../helpers/isValidIdEmployee");
 const validateJWT = require("../helpers/validate-jwt");
@@ -69,3 +71,9 @@ router.put("/:idEmployee/active", activeEmployee);
 // show services by idEmployee
 router.get("/:id", showServices);
 module.exports = router;
+
+// olvidé mi contraseña
+router.post("/forget-password", sendEmailForgetPassword);
+
+// cambiar la clave
+router.post("/new-password", resetPassword);

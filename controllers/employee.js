@@ -4,6 +4,8 @@ const Employee = require("../models/employee");
 const Service = require("../models/Service");
 const bcrypt = require("bcryptjs");
 const generateJWT = require("../helpers/generate-jwt");
+const { emailNewPassword } = require("../helpers/email");
+var jwt = require("jsonwebtoken");
 
 const getEmployees = async (req = request, res = response) => {
   try {
@@ -228,6 +230,65 @@ const activeEmployee = async (req = request, res = response) => {
   }
 };
 
+//  olvidó la contraseña
+const sendEmailForgetPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const employee = await Employee.find().where("email").equals(email);
+    const employeeId = employee[0].id;
+    if (!employee) {
+      return res.status(400).json({
+        message: "El usuario no Existe",
+      });
+    }
+    const token = await generateJWT(employeeId);
+    await emailNewPassword({
+      email,
+      token,
+      name: employee[0].name,
+    });
+
+    return res.status(200).json({
+      message:
+        "Porfavor, revisé su bandeja de correo para los siguientes pasos.",
+    });
+  } catch (error) {
+    return res.status(400).json({ message: "Hubo un error" });
+  }
+};
+
+const resetPassword = async (req = request, res = response) => {
+  try {
+    const { email, password, token } = req.body;
+    // verificando si es un token valido
+    const tokenValid = await jwt.verify(token, process.env.PUBLIC_KEY);
+    console.log("token valid", tokenValid.id);
+    const userEmployee = await Employee.find().where("email").equals(email);
+
+    if (password) {
+      const salt = await bcrypt.genSaltSync();
+      userEmployee[0].password = await bcrypt.hashSync(password, salt);
+    }
+
+    console.log("id=>", tokenValid.id);
+    console.log("body", userEmployee);
+    const userUpdate = await Employee.findByIdAndUpdate(
+      tokenValid.id,
+      userEmployee[0]
+    );
+    await userUpdate.save();
+
+    return res.json({
+      message: "La contraseña ha sido modificado",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      message: "Ocurrió un error - token no válido",
+    });
+  }
+};
+
 module.exports = {
   getEmployees,
   postEmployee,
@@ -238,4 +299,6 @@ module.exports = {
   logingEmployee,
   getEmployeesById,
   activeEmployee,
+  sendEmailForgetPassword,
+  resetPassword,
 };
