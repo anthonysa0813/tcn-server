@@ -11,6 +11,16 @@ const LanguageSchema = mongoose.Schema({
     required: [true, "el nivel en escritura es requerido"],
     trim: true,
   },
+  levelRead: {
+    type: String,
+    required: [true, "el nivel de lectura es requerido"],
+    trim: true,
+  },
+  levelListen: {
+    type: String,
+    required: [true, "el nivel de escucha es requerido"],
+    trim: true,
+  },
   levelOral: {
     type: String,
     required: [true, "el nivel oral es requerido"],

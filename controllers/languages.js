@@ -32,6 +32,8 @@ const createLang = async (req = request, res = response) => {
       levelWriter: body.levelWriter,
       levelOral: body.levelOral,
       employee: idEmployee,
+      levelRead: body.levelRead,
+      levelListen: body.levelListen,
     });
     lang.save();
     return res.json(lang);
