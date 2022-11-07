@@ -6,6 +6,11 @@ const Schema = mongoose.Schema({
     required: [true, "Es nombre es requerido"],
     trim: true,
   },
+  level: {
+    type: String,
+    required: [true, "El nivel es requerido"],
+    trim: true,
+  },
   employee: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Employee",

@@ -25,6 +25,7 @@ const createKnoledge = async (req = request, res = response) => {
   }
   const knoledge = await new Knoledge({
     name: body.name,
+    level: body.level,
     employee: idEmployee,
   });
   await knoledge.save();
