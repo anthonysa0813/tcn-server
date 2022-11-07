@@ -60,7 +60,7 @@ const loginUser = async (req = request, res = response) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "El email no existe",
       });
     }
@@ -68,7 +68,7 @@ const loginUser = async (req = request, res = response) => {
     // verificar la contraseña
     const isValidPassword = bcryptjs.compareSync(password, user.password);
     if (!isValidPassword) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "El password es inválido",
       });
     }
@@ -77,9 +77,9 @@ const loginUser = async (req = request, res = response) => {
     const token = await generateJWT(user._id);
     // Cookies.set("token", token, { expires: 7 });
 
-    res.status(200).json({ user, token });
+    return res.status(200).json({ user, token });
   } catch (error) {
-    res.status(500).json({ message: "Habla con el admin" });
+    return res.status(500).json({ message: "Habla con el admin" });
   }
 };
 
