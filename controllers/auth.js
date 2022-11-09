@@ -6,7 +6,8 @@ const generateJWT = require("../helpers/generate-jwt");
 
 const createUser = async (req = request, res = response) => {
   try {
-    const { email, password, role } = req.body;
+    const body = req.body;
+    const { email, password, superAdmin, role } = body;
     // si el email ya existe
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -20,16 +21,10 @@ const createUser = async (req = request, res = response) => {
       password,
       role,
       name: "",
-      image: "",
-      surnames: "",
-      phone: "",
-      callingCall: "",
-      typeJob: "",
-      cv: "",
+      superAdmin,
     });
     const salt = await bcryptjs.genSaltSync();
     user.password = await bcryptjs.hashSync(password, salt);
-    console.log("user auth", user);
     await user.save();
     return res.status(201).json(user);
   } catch (error) {
@@ -84,14 +79,24 @@ const loginUser = async (req = request, res = response) => {
 };
 
 const updateUser = async (req = request, res = response) => {
-  const data = req.body;
-  const { id } = req.params;
+  try {
+    const data = req.body;
+    const { id } = req.params;
+    const { superAdmin } = data;
 
-  await User.findByIdAndUpdate(id, data);
+    const user = await User.findByIdAndUpdate(id, data);
 
-  res.status(200).json({
-    message: "El usuario fue actualizado",
-  });
+    return res.status(200).json({
+      message: "El usuario fue actualizado",
+      user,
+      superAdmin,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Hubo un error",
+    });
+  }
 };
 
 const deleteUser = async (req = request, res = response) => {
@@ -104,10 +109,30 @@ const deleteUser = async (req = request, res = response) => {
   });
 };
 
+const searchAuth = async (req = request, res = response) => {
+  try {
+    const { email } = req.params;
+    const UserAuth = await User.findOne().where("email").equals(email);
+    if (!UserAuth) {
+      return res.json({
+        user: [],
+        message: "No se encontró ningún usuario con ese email.",
+      });
+    } else {
+      return res.json({
+        user: UserAuth,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   createUser,
   getUsers,
   loginUser,
   updateUser,
   deleteUser,
+  searchAuth,
 };

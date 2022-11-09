@@ -13,21 +13,22 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: [true, "El password es requerido"],
   },
+  superAdmin: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
   role: {
     type: String,
     required: false,
     enum: ["ADMIN_ROLE", "USER_ROLE"],
-    default: "ADMIN_ROLE",
-  },
-  image: {
-    type: String,
-    required: false,
+    default: "USER_ROLE",
   },
 });
 
 UserSchema.methods.toJSON = function () {
-  const { email, role, _id: id, __v, name } = this.toObject();
-  return { email, role, name, id };
+  const { email, role, _id: id, __v, name, superAdmin } = this.toObject();
+  return { email, role, name, id, superAdmin };
 };
 const model = mongoose.model("User", UserSchema);
 

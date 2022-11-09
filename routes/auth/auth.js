@@ -6,6 +6,7 @@ const {
   loginUser,
   updateUser,
   deleteUser,
+  searchAuth,
 } = require("../../controllers/auth");
 const isValidIdUser = require("../../helpers/isValidID");
 const validateJWT = require("../../helpers/validate-jwt");
@@ -50,5 +51,8 @@ router.delete(
   ],
   deleteUser
 );
+
+// search Auth
+router.get("/search/:email", searchAuth);
 
 module.exports = router;
