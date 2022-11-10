@@ -317,6 +317,33 @@ const changeStatusJob = async (req = request, res = response) => {
   }
 };
 
+const searchEmployee = async (req = request, res = response) => {
+  try {
+    const { email, dni, statusJob } = req.query;
+    if (email) {
+      const userSearchByEma = await Employee.findOne({ email });
+      if (!userSearchByEma) {
+        return res.status(404).json([]);
+      } else {
+        return res.status(200).json([userSearchByEma]);
+      }
+    } else if (dni) {
+      const userSearchByDni = await Employee.find().where("dni").equals(dni);
+      return res.status(200).json(userSearchByDni);
+    } else if (statusJob) {
+      const userSearchByStatus = await Employee.find()
+        .where("statusJob")
+        .equals(statusJob);
+      return res.status(200).json(userSearchByStatus);
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Hubo un error",
+    });
+  }
+};
+
 module.exports = {
   getEmployees,
   postEmployee,
@@ -330,4 +357,5 @@ module.exports = {
   sendEmailForgetPassword,
   resetPassword,
   changeStatusJob,
+  searchEmployee,
 };

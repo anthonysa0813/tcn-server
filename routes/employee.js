@@ -13,6 +13,7 @@ const {
   sendEmailForgetPassword,
   resetPassword,
   changeStatusJob,
+  searchEmployee,
 } = require("../controllers/employee");
 const existIdEmployee = require("../helpers/isValidIdEmployee");
 const validateJWT = require("../helpers/validate-jwt");
@@ -20,6 +21,8 @@ const validationFields = require("../middlewares/validationFields");
 
 const router = Router();
 
+// filter: busca employees por el estado de trabajo del usuario ("DESCARTADO, SELECCIONADO, CONTRATAD")
+router.get("/search", searchEmployee);
 // trae todos los employees
 router.get("/", [validationFields], getEmployees);
 // traer un employee by Id
@@ -71,7 +74,6 @@ router.put("/:idEmployee/active", activeEmployee);
 
 // show services by idEmployee
 router.get("/:id", showServices);
-module.exports = router;
 
 // olvidé mi contraseña
 router.post("/forget-password", sendEmailForgetPassword);
@@ -81,3 +83,5 @@ router.post("/new-password", resetPassword);
 
 // Cambiar el estado del "StatusJob" values => "DESCARTADO, SELECCIONADO, CONTRATADO, ""
 router.post("/change-status-job", changeStatusJob);
+
+module.exports = router;

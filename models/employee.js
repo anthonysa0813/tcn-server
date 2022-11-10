@@ -30,6 +30,10 @@ const EmployeeShema = mongoose.Schema({
     type: String,
     require: false,
   },
+  dni: {
+    type: String,
+    require: false,
+  },
   callingCode: {
     type: String,
     require: [true, "el codigo es requerido"],
