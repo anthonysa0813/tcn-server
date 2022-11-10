@@ -94,6 +94,11 @@ const EmployeeShema = mongoose.Schema({
     default: false,
     required: false,
   },
+  statusJob: {
+    type: String,
+    enum: ["DESCARTADO", "SELECCIONADO", "CONTRATADO", ""],
+    required: false,
+  },
 });
 
 EmployeeShema.methods.toJSON = function () {

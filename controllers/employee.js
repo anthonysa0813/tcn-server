@@ -298,6 +298,25 @@ const resetPassword = async (req = request, res = response) => {
   }
 };
 
+const changeStatusJob = async (req = request, res = response) => {
+  try {
+    const { statusOption, idEmployee } = req.body;
+    const employee = await Employee.findById(idEmployee);
+    if (!employee) {
+      return res.status(404).json({
+        message: "No se encontró al usuario",
+      });
+    }
+    employee.statusJob = statusOption;
+    employee.save();
+    return res.json(employee);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Hubo un error",
+    });
+  }
+};
+
 module.exports = {
   getEmployees,
   postEmployee,
@@ -310,4 +329,5 @@ module.exports = {
   activeEmployee,
   sendEmailForgetPassword,
   resetPassword,
+  changeStatusJob,
 };

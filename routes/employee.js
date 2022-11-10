@@ -12,6 +12,7 @@ const {
   activeEmployee,
   sendEmailForgetPassword,
   resetPassword,
+  changeStatusJob,
 } = require("../controllers/employee");
 const existIdEmployee = require("../helpers/isValidIdEmployee");
 const validateJWT = require("../helpers/validate-jwt");
@@ -77,3 +78,6 @@ router.post("/forget-password", sendEmailForgetPassword);
 
 // cambiar la clave
 router.post("/new-password", resetPassword);
+
+// Cambiar el estado del "StatusJob" values => "DESCARTADO, SELECCIONADO, CONTRATADO"
+router.post("/change-status-job", changeStatusJob);
