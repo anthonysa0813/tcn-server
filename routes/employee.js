@@ -79,5 +79,5 @@ router.post("/forget-password", sendEmailForgetPassword);
 // cambiar la clave
 router.post("/new-password", resetPassword);
 
-// Cambiar el estado del "StatusJob" values => "DESCARTADO, SELECCIONADO, CONTRATADO"
+// Cambiar el estado del "StatusJob" values => "DESCARTADO, SELECCIONADO, CONTRATADO, ""
 router.post("/change-status-job", changeStatusJob);
