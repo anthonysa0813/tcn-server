@@ -106,7 +106,7 @@ const EmployeeShema = mongoose.Schema({
 });
 
 EmployeeShema.methods.toJSON = function () {
-  const { _id: id, __v, ...rest } = this.toObject();
+  const { _id: id, __v, password, ...rest } = this.toObject();
   return {
     id,
     ...rest,
