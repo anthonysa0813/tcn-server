@@ -3,11 +3,12 @@ const User = require("../models/auth");
 const bcryptjs = require("bcryptjs");
 // const Cookies = require("js-cookie");
 const generateJWT = require("../helpers/generate-jwt");
+const sendEmailWithjet = require("../mail_config/mainJet.config");
 
 const createUser = async (req = request, res = response) => {
   try {
     const body = req.body;
-    const { email, password, superAdmin, role } = body;
+    const { email, password, superAdmin, role, name } = body;
     // si el email ya existe
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -20,12 +21,13 @@ const createUser = async (req = request, res = response) => {
       email,
       password,
       role,
-      name: "",
+      name,
       superAdmin,
     });
     const salt = await bcryptjs.genSaltSync();
     user.password = await bcryptjs.hashSync(password, salt);
     await user.save();
+    sendEmailWithjet(email, name, password);
     return res.status(201).json(user);
   } catch (error) {
     console.log(error);
@@ -82,14 +84,17 @@ const updateUser = async (req = request, res = response) => {
   try {
     const data = req.body;
     const { id } = req.params;
-    const { superAdmin } = data;
-
+    const { superAdmin, password, name, email } = data;
     const user = await User.findByIdAndUpdate(id, data);
 
+    if (password) {
+      const salt = await bcryptjs.genSaltSync();
+      user.password = await bcryptjs.hashSync(password, salt);
+    }
+
+    user.save();
     return res.status(200).json({
       message: "El usuario fue actualizado",
-      user,
-      superAdmin,
     });
   } catch (error) {
     console.log(error);
