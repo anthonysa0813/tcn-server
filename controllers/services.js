@@ -1,6 +1,7 @@
 const { response, request } = require("express");
 const Service = require("../models/Service");
 
+// devuelve la lista con todos los servicios (puestos de trabajo)
 const getAllServices = async (req = request, res = response) => {
   try {
     const { limit = 5, offset = 0 } = req.query;
@@ -20,6 +21,7 @@ const getAllServices = async (req = request, res = response) => {
   }
 };
 
+// crea un nuevo servicio (puesto de trabajo)
 const createNewService = async (req = request, res = response) => {
   const { body } = req;
   const service = new Service(body);

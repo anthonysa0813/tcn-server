@@ -16,6 +16,7 @@ class Server {
       profesional: "/api/profesional",
       experience: "/api/experiences",
       knoledge: "/api/knoledge",
+      contracts: "/api/contracts",
     };
     this.middleware();
     this.router();
