@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const generateJWT = require("../helpers/generate-jwt");
 const { emailNewPassword } = require("../helpers/email");
 var jwt = require("jsonwebtoken");
+const sendCredentialsToNewPassword = require("../mail_config/mailJetSendCredentials");
 
 const getEmployees = async (req = request, res = response) => {
   try {
@@ -245,17 +246,19 @@ const sendEmailForgetPassword = async (req, res) => {
     const { email } = req.body;
     const employee = await Employee.find().where("email").equals(email);
     const employeeId = employee[0].id;
+    console.log("user", employee);
     if (!employee) {
       return res.status(400).json({
         message: "El usuario no Existe",
       });
     }
     const token = await generateJWT(employeeId);
-    await emailNewPassword({
-      email,
-      token,
-      name: employee[0].name,
-    });
+    // await emailNewPassword({
+    //   email,
+    //   token,
+    //   name: employee[0].name,
+    // });
+    await sendCredentialsToNewPassword(email, employee[0].name, token);
 
     return res.status(200).json({
       message:

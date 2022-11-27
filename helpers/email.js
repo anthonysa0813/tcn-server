@@ -1,4 +1,10 @@
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
+const Mailjet = require("node-mailjet");
+
+const mailjet = Mailjet.apiConnect(
+  process.env.MJ_APIKEY_PUBLIC,
+  process.env.MJ_APIKEY_PRIVATE
+);
 
 const emailNewPassword = async (data) => {
   const { email, token, name } = data;
