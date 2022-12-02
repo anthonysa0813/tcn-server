@@ -13,16 +13,26 @@ const getEmployees = async (req = request, res = response) => {
     const { limit = 5, offset = 1 } = req.query;
     //http://localhost:5050/api/users?offset=10&limit=5
 
-    const users = await Employee.find()
-      .populate("service")
-      .limit(Number(limit))
-      .skip(Number(offset));
-    const total = await Employee.countDocuments();
+    if (limit && offset) {
+      const users = await Employee.find()
+        .populate("service")
+        .limit(Number(limit))
+        .skip(Number(offset));
+      const total = await Employee.countDocuments();
 
-    return res.json({
-      users,
-      total,
-    });
+      return res.json({
+        users,
+        total,
+      });
+    } else {
+      const users = await Employee.find().populate("service");
+      const total = await Employee.countDocuments();
+
+      return res.json({
+        users,
+        total,
+      });
+    }
   } catch (error) {
     console.log(error);
     return res.status(500).json({
