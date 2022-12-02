@@ -10,7 +10,7 @@ const sendCredentialsToNewPassword = require("../mail_config/mailJetSendCredenti
 
 const getEmployees = async (req = request, res = response) => {
   try {
-    const { limit = 5, offset = 1 } = req.query;
+    const { limit, offset } = req.query;
     //http://localhost:5050/api/users?offset=10&limit=5
 
     if (limit && offset) {
