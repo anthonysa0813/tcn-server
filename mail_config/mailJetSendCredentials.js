@@ -22,7 +22,7 @@ const sendCredentialsToNewPassword = async (email, name, token) => {
           ],
           Subject: "Recuperar clave",
           TextPart: `¡Hola ${name}, BIENVENIDO a CONTACT!`,
-          HTMLPart: `<p>Hola: ${name}, haz solicitado generar una nueva contraseña</p>
+          HTMLPart: `<p style="color: red;">Hola: ${name}, haz solicitado generar una nueva contraseña</p>
     <p>Sigue los pasos del siguiente enlace</p>
     <a href="${process.env.URL_DEV}/new-password/${token}">Generar nueva contraseña</a>
         `,
