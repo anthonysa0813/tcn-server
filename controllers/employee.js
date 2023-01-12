@@ -4,9 +4,12 @@ const Employee = require("../models/employee");
 const Service = require("../models/Service");
 const bcrypt = require("bcryptjs");
 const generateJWT = require("../helpers/generate-jwt");
-const { emailNewPassword } = require("../helpers/email");
+const { emailNewPassword, activeEmployeeEmail } = require("../helpers/email");
 var jwt = require("jsonwebtoken");
-const sendCredentialsToNewPassword = require("../mail_config/mailJetSendCredentials");
+const {
+  sendCredentialsToNewPassword,
+  sendEmailToActivateAccount,
+} = require("../mail_config/mailJetSendCredentials");
 
 const getEmployees = async (req = request, res = response) => {
   try {
@@ -44,9 +47,8 @@ const getEmployees = async (req = request, res = response) => {
 const postEmployee = async (req = request, res = response) => {
   try {
     const body = req.body;
-
     // ver si existe el email
-    let { email, password } = body;
+    let { email, password, name } = body;
     const employee = await Employee.findOne({ email });
     if (employee) {
       return res.status(400).json({ message: "El email ya está registrado" });
@@ -65,8 +67,8 @@ const postEmployee = async (req = request, res = response) => {
     // revisar si son pdf o word
     const extensionFile = cv.name.split(".")[1]; // extension del archivo
 
-    const validatesExtensions = ["pdf", "docx"];
-    console.log("extensionFile", extensionFile);
+    const validatesExtensions = ["pdf"];
+    // console.log("extensionFile", extensionFile);
     if (!validatesExtensions.includes(extensionFile)) {
       return res.status(400).json({
         message: `la extensión no es válida, solo aceptamos archivos ${validatesExtensions}`,
@@ -87,8 +89,16 @@ const postEmployee = async (req = request, res = response) => {
 
     // guardar employee en la DB
     const user = new Employee(data);
-
     await user.save();
+    const token = await generateJWT(user._id);
+    // console.log(user);
+    await sendEmailToActivateAccount(email, name, user._id, token);
+    console.log({
+      email,
+      name,
+      id: user._id,
+      token,
+    });
 
     return res.status(200).json(user);
   } catch (error) {
@@ -234,10 +244,13 @@ const getEmployeesById = async (req = request, res = response) => {
 const activeEmployee = async (req = request, res = response) => {
   try {
     const { idEmployee } = req.params;
+    const { token } = req.body;
+
     const employee = await Employee.findById(idEmployee);
     if (!employee) {
       return res.status(400).json({ message: "El usuario no se encontró" });
     }
+    const isValidToken = jwt.verify(token, process.env.PUBLIC_KEY);
 
     employee.status = true;
     employee.save();

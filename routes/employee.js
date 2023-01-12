@@ -44,6 +44,8 @@ router.post(
   postEmployee
 );
 
+router.put("/activate/:idEmployee", activeEmployee);
+
 // actualiza el status del employee
 router.put(
   "/:id",
@@ -70,7 +72,6 @@ router.delete(
 router.post("/:idEmployee/:idService", addServiceToEmployee);
 
 // activar al usuario (employee)
-router.put("/:idEmployee/active", activeEmployee);
 
 // show services by idEmployee
 router.get("/:id", showServices);
