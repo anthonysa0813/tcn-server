@@ -145,6 +145,12 @@ const addServiceToEmployee = async (req = request, res = response) => {
     if (!service) {
       return res.status(400).json({ message: "no se encontró al servicio" });
     }
+    if (!service.status) {
+      return res
+        .status(400)
+        .json({ message: "Ya finalizó el proceso de postulación" });
+    }
+    console.log({ service });
 
     if (employee.servicesId.includes(idService)) {
       return res

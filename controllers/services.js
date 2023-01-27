@@ -38,8 +38,25 @@ const getServicesById = async (req = request, res = response) => {
   return res.json(resultService);
 };
 
+const putServicesById = async (req = request, res = response) => {
+  const { id } = req.params;
+  try {
+    const ServiceData = await Service.findById(id);
+    const ServiceFind = await Service.findByIdAndUpdate(id, {
+      status: !ServiceData.status,
+    });
+    return res.status(200).json(ServiceFind);
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({
+      message: "Service not found",
+    });
+  }
+};
+
 module.exports = {
   getAllServices,
   createNewService,
   getServicesById,
+  putServicesById,
 };
