@@ -151,11 +151,11 @@ const sendEmailToActivateAccount = async (
         {
           From: {
             Email: "anthonysa0813@gmail.com",
-            Name: "anthony sanchez",
+            Name: "Contact BPO ",
           },
           To: [
             {
-              Email: "anthonysa0813@gmail.com",
+              Email: email,
               Name: name,
             },
           ],
