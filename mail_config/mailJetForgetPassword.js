@@ -5,7 +5,7 @@ const mailjet = Mailjet.apiConnect(
   process.env.MJ_APIKEY_PRIVATE
 );
 
-const sendEmailWithjet = async (email, name, password) => {
+const sendEmailWithjet = async (email, name, token) => {
   try {
     const request = await mailjet.post("send", { version: "v3.1" }).request({
       Messages: [
@@ -20,8 +20,8 @@ const sendEmailWithjet = async (email, name, password) => {
               Name: name,
             },
           ],
-          Subject: "Cuenta de contact dashboard",
-          TextPart: `¡Hola ${name}, BIENVENIDO a CONTACT!`,
+          Subject: "Recuperación de cuenta",
+          TextPart: `Hola ${name}, solicitud derecuperación de cuenta`,
           HTMLPart: `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -95,25 +95,16 @@ const sendEmailWithjet = async (email, name, password) => {
           color: #175676;
         "
       >
-        ¡Hola #{name}, Bienveido a Contact Dashboard!
+        Hola #{name}, acabas de solicitar un cambio de contraseña
       </h4>
       <span style="font-family: Poppins; font-size: 14px; Margin: 0 0 0 0;">
-        Ahora eres parte de Contact Dashboard, tus credenciales de acceso a la plataforma son: 
+       Solamente debs de ingresar al siguiente enlace para realizar la actualización: 
       </span>
         <table style="Margin: 10px 0px 10px 0" >
-      <tr>
-        <td>
-          <p style="">Email:<span> ${email} </span></p>
-        </td>
-      </tr>
+     
         <tr>
         <td>
-          <p style="">Password:<span> ${password} </span></p>
-        </td>
-      </tr>
-        <tr>
-        <td>
-          <strong>Enlace:</strong><a target="_blank" href=""> https://client-bpo.vercel.app/admin</a>
+          <a class="button" href="${process.env.URL_DEV}/new-password/${token}">Generar nueva contraseña</a>
         </td>
       </tr>
     </table>
@@ -123,7 +114,6 @@ const sendEmailWithjet = async (email, name, password) => {
     </div>
   </body>
 </html>
-
         `,
         },
       ],
