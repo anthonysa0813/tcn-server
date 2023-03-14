@@ -48,7 +48,7 @@ const ExperienceSchema = mongoose.Schema({
   },
   dateEnd: {
     type: String,
-    required: [true, "La fecha final es requerida"],
+    required: false,
   },
   currentJob: {
     type: Boolean,

@@ -136,9 +136,6 @@ const addServiceToEmployee = async (req = request, res = response) => {
     const employee = await Employee.findById(idEmployee);
     const service = await Service.findById(idService);
 
-    // if(employee.service.includes(idService)) {
-    //   return res.status(400).json({message: "el servicio ya está incluido"})
-    // }
     if (!employee) {
       return res.status(400).json({ message: "no se encontró al usuario" });
     }
