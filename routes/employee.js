@@ -14,6 +14,7 @@ const {
   resetPassword,
   changeStatusJob,
   searchEmployee,
+  putStateJob,
 } = require("../controllers/employee");
 const existIdEmployee = require("../helpers/isValidIdEmployee");
 const validateJWT = require("../helpers/validate-jwt");
@@ -82,7 +83,7 @@ router.post("/forget-password", sendEmailForgetPassword);
 // cambiar la clave
 router.post("/new-password", resetPassword);
 
-// Cambiar el estado del "StatusJob" values => "DESCARTADO, SELECCIONADO, CONTRATADO, ""
+// Cambiar el estado del "StatusJob" values => "DESCARTADO, SELECCIONADO, CONTRATADO, "VISTO",  ""
 router.post("/change-status-job", changeStatusJob);
 
 module.exports = router;

@@ -16,6 +16,6 @@ router.post("/", createNewService);
 router.get("/:id", getServicesById);
 
 // actualizar el status del puesto de trabajo
-router.put("/:id", putServicesById);
+router.put("/:idEmployee/:idService", putServicesById);
 
 module.exports = router;

@@ -100,7 +100,15 @@ const EmployeeShema = mongoose.Schema({
   },
   statusJob: {
     type: String,
-    enum: ["DESCARTADO", "SELECCIONADO", "CONTRATADO", ""],
+    enum: [
+      "DESCARTADO",
+      "SELECCIONADO",
+      "CONTRATADO",
+      "VISTO",
+      "POSTULADO",
+      "",
+    ],
+    defaultValue: "POSTULADO",
     required: false,
   },
 });

@@ -181,6 +181,7 @@ const deleteEmployee = async (req = request, res = response) => {
     console.log(error);
     return res.status(500).json({
       message: "Hubo un error",
+      error: error.message,
     });
   }
 };
@@ -336,9 +337,20 @@ const changeStatusJob = async (req = request, res = response) => {
         message: "No se encontró al usuario",
       });
     }
-    employee.statusJob = statusOption;
-    employee.save();
-    return res.json(employee);
+
+    if (statusOption !== "VISTO") {
+      employee.statusJob = statusOption;
+      employee.save();
+      return res.json({ message: "ok", employee });
+    } else if (statusOption === "VISTO" || employee.statusJob === "VISTO") {
+      if (employee.statusJob === "ENTREGADO") {
+        employee.statusJob = "VISTO";
+        employee.save();
+        return res.json({ message: "ok", employee });
+      } else {
+        return res.json({ message: "ok", employee });
+      }
+    }
   } catch (error) {
     return res.status(500).json({
       message: "Hubo un error",
