@@ -2,6 +2,7 @@ const { request, response } = require("express");
 const cloudinaryFunc = require("../lib/cloudinary");
 const Employee = require("../models/employee");
 const Service = require("../models/Service");
+const EmployeeJobStatus = require("../models/employeeJobStatus");
 const bcrypt = require("bcryptjs");
 const generateJWT = require("../helpers/generate-jwt");
 const { emailNewPassword, activeEmployeeEmail } = require("../helpers/email");
@@ -358,6 +359,60 @@ const changeStatusJob = async (req = request, res = response) => {
   }
 };
 
+const addEmployeeJobStatus = async (req = request, res = response) => {
+  try {
+    const { idEmployee, idService, statusValue } = req.body;
+
+    const employee = await EmployeeJobStatus.find().where({
+      service: idService,
+    });
+
+    if (employee.length > 0) {
+      return res.status(300).json({
+        message: "Ya ha aplicado a este puesto",
+      });
+    } else {
+      const jobApplication = new EmployeeJobStatus({
+        employee: idEmployee,
+        service: idService,
+        status: statusValue,
+      });
+      jobApplication.save();
+
+      res.status(200).json({
+        jobApplication,
+        employee,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Hubo un error",
+    });
+  }
+};
+
+const getAllApplicationsJobByEmployeeId = async (
+  req = request,
+  res = response
+) => {
+  try {
+    const { idEmployee } = req.params;
+    const employee = await EmployeeJobStatus.find().where({
+      employee: idEmployee,
+    });
+
+    if (!employee) {
+      res.status(404).json({ message: "Employee not found" });
+    }
+
+    res.json({ employee });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Hubo un error",
+    });
+  }
+};
+
 const searchEmployee = async (req = request, res = response) => {
   try {
     const { email, dni, statusJob } = req.query;
@@ -399,4 +454,6 @@ module.exports = {
   resetPassword,
   changeStatusJob,
   searchEmployee,
+  addEmployeeJobStatus,
+  getAllApplicationsJobByEmployeeId,
 };

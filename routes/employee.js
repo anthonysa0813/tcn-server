@@ -15,6 +15,8 @@ const {
   changeStatusJob,
   searchEmployee,
   putStateJob,
+  addEmployeeJobStatus,
+  getAllApplicationsJobByEmployeeId,
 } = require("../controllers/employee");
 const existIdEmployee = require("../helpers/isValidIdEmployee");
 const validateJWT = require("../helpers/validate-jwt");
@@ -85,5 +87,14 @@ router.post("/new-password", resetPassword);
 
 // Cambiar el estado del "StatusJob" values => "DESCARTADO, SELECCIONADO, CONTRATADO, "VISTO",  ""
 router.post("/change-status-job", changeStatusJob);
+
+// crear una tabla aparte donde tengamos el valor del estado del emploeador  "DESCARTADO, SELECCIONADO, CONTRATADO, "VISTO",  ""
+router.post("/status-job", addEmployeeJobStatus);
+
+// trae información sobre ese empleador
+router.get(
+  "/get-applications-jobs/:idEmployee",
+  getAllApplicationsJobByEmployeeId
+);
 
 module.exports = router;
