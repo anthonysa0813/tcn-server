@@ -386,8 +386,23 @@ const addEmployeeJobStatus = async (req = request, res = response) => {
         status: statusValue,
       });
       jobApplication.save();
-      res.status(200).json(jobApplication);
+      return res.status(200).json(jobApplication);
     }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Hubo un error",
+    });
+  }
+};
+
+const updateEmployeeJobStatus = async (req = request, res = response) => {
+  try {
+    const { idJobStatus } = req.params;
+    const { status } = req.body;
+    const employeeJobStatus = await EmployeeJobStatus.findById(idJobStatus);
+    employeeJobStatus.status = status;
+    employeeJobStatus.save();
+    return res.json({ message: "se ha modificado" });
   } catch (error) {
     return res.status(500).json({
       message: "Hubo un error",
@@ -460,4 +475,5 @@ module.exports = {
   searchEmployee,
   addEmployeeJobStatus,
   getAllApplicationsJobByEmployeeId,
+  updateEmployeeJobStatus,
 };

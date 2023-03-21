@@ -17,6 +17,7 @@ const {
   putStateJob,
   addEmployeeJobStatus,
   getAllApplicationsJobByEmployeeId,
+  updateEmployeeJobStatus,
 } = require("../controllers/employee");
 const existIdEmployee = require("../helpers/isValidIdEmployee");
 const validateJWT = require("../helpers/validate-jwt");
@@ -96,5 +97,8 @@ router.get(
   "/get-applications-jobs/:idEmployee",
   getAllApplicationsJobByEmployeeId
 );
+
+// modificar el status job
+router.put("/status-job/:idJobStatus", updateEmployeeJobStatus);
 
 module.exports = router;
