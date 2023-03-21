@@ -363,9 +363,17 @@ const addEmployeeJobStatus = async (req = request, res = response) => {
   try {
     const { idEmployee, idService, statusValue } = req.body;
 
-    const employee = await EmployeeJobStatus.find().where({
-      service: idService,
-    });
+    const employee = await EmployeeJobStatus.find()
+      .where({
+        service: idService,
+      })
+      .where({ employee: idEmployee });
+
+    // const existEmployeeApplication = employee.filter(
+    //   (emp) => emp.employee === idEmployee
+    // );
+
+    // return res.json(employee);
 
     if (employee.length > 0) {
       return res.status(300).json({
@@ -378,11 +386,7 @@ const addEmployeeJobStatus = async (req = request, res = response) => {
         status: statusValue,
       });
       jobApplication.save();
-
-      res.status(200).json({
-        jobApplication,
-        employee,
-      });
+      res.status(200).json(jobApplication);
     }
   } catch (error) {
     return res.status(500).json({
@@ -405,7 +409,7 @@ const getAllApplicationsJobByEmployeeId = async (
       res.status(404).json({ message: "Employee not found" });
     }
 
-    res.json({ employee });
+    res.json(employee);
   } catch (error) {
     return res.status(500).json({
       message: "Hubo un error",
