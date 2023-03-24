@@ -54,9 +54,24 @@ const putServicesById = async (req = request, res = response) => {
   }
 };
 
+const deleteService = async (req = request, res = response) => {
+  try {
+    const { idService } = req.params;
+    const service = await Service.findByIdAndDelete(idService);
+    res.json({
+      message: "El puesto ha sido eliminado",
+    });
+  } catch (error) {
+    return res.status(404).json({
+      message: "Service not found",
+    });
+  }
+};
+
 module.exports = {
   getAllServices,
   createNewService,
   getServicesById,
   putServicesById,
+  deleteService,
 };

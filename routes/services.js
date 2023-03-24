@@ -4,6 +4,7 @@ const {
   createNewService,
   getServicesById,
   putServicesById,
+  deleteService,
 } = require("../controllers/services");
 
 const router = Router();
@@ -17,5 +18,8 @@ router.get("/:id", getServicesById);
 
 // actualizar el status del puesto de trabajo
 router.put("/:idEmployee/:idService", putServicesById);
+
+// Eliminando el servicio
+router.delete("/:idService", deleteService);
 
 module.exports = router;
