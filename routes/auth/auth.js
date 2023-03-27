@@ -7,6 +7,7 @@ const {
   updateUser,
   deleteUser,
   searchAuth,
+  recoverAccount,
 } = require("../../controllers/auth");
 const isValidIdUser = require("../../helpers/isValidID");
 const validateJWT = require("../../helpers/validate-jwt");
@@ -54,5 +55,8 @@ router.delete(
 
 // search Auth
 router.get("/search/:email", searchAuth);
+
+// recuperación de cuenta
+router.post("/recover-account/:emailUser", recoverAccount);
 
 module.exports = router;

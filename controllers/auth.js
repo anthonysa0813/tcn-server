@@ -4,6 +4,8 @@ const bcryptjs = require("bcryptjs");
 // const Cookies = require("js-cookie");
 const generateJWT = require("../helpers/generate-jwt");
 const sendEmailWithjet = require("../mail_config/mainJet.config");
+const generator = require("generate-password");
+const sendEmailForgetPassAdmin = require("../mail_config/mailJetForgetAdminPassword");
 
 const createUser = async (req = request, res = response) => {
   try {
@@ -133,6 +135,41 @@ const searchAuth = async (req = request, res = response) => {
   }
 };
 
+// envio del nuevo password
+const recoverAccount = async (req = request, res = response) => {
+  try {
+    const { emailUser } = req.params;
+    const user = await User.findOne({ email: emailUser });
+    const passRandom = await generator.generate({
+      length: 10,
+      numbers: true,
+    });
+
+    if (user.length === 0) {
+      return res.status(404).json({
+        message: "El usuario no existe",
+      });
+    }
+
+    const salt = await bcryptjs.genSaltSync();
+    user.password = await bcryptjs.hashSync(passRandom, salt);
+    user.save();
+
+    // sendEmailForgetPassAdmin(emailUser, user.name, passRandom);
+    sendEmailForgetPassAdmin("anthonysa0813@gmail.com", user.name, passRandom);
+
+    return res.json({
+      message: "Se ha enviado un correo con los siguientes pasos...",
+      user,
+      passRandom,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Hubo un error",
+    });
+  }
+};
+
 module.exports = {
   createUser,
   getUsers,
@@ -140,4 +177,5 @@ module.exports = {
   updateUser,
   deleteUser,
   searchAuth,
+  recoverAccount,
 };
