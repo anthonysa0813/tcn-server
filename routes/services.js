@@ -17,7 +17,7 @@ router.post("/", createNewService);
 router.get("/:id", getServicesById);
 
 // actualizar el status del puesto de trabajo
-router.put("/:idEmployee/:idService", putServicesById);
+router.put("/:id", putServicesById);
 
 // Eliminando el servicio
 router.delete("/:idService", deleteService);
