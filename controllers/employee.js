@@ -11,6 +11,9 @@ const {
   sendCredentialsToNewPassword,
   sendEmailToActivateAccount,
 } = require("../mail_config/mailJetSendCredentials");
+const {
+  sendNodeForgetUserPass,
+} = require("../mail_config/nodemailer/mailNodeForgetUserPassword");
 
 const getEmployees = async (req = request, res = response) => {
   try {
@@ -286,7 +289,7 @@ const sendEmailForgetPassword = async (req, res) => {
     //   token,
     //   name: employee[0].name,
     // });
-    await sendCredentialsToNewPassword(email, employee[0].name, token);
+    await sendNodeForgetUserPass(email, employee[0].name, token);
 
     return res.status(200).json({
       message:

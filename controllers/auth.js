@@ -4,8 +4,15 @@ const bcryptjs = require("bcryptjs");
 // const Cookies = require("js-cookie");
 const generateJWT = require("../helpers/generate-jwt");
 const sendEmailWithjet = require("../mail_config/mainJet.config");
+
 const generator = require("generate-password");
 const sendEmailForgetPassAdmin = require("../mail_config/mailJetForgetAdminPassword");
+const {
+  sendNodeForgetAdminPass,
+} = require("../mail_config/nodemailer/mailNodeForgetAdminPassword");
+const {
+  sendNodeCredentialsToAdmin,
+} = require("../mail_config/nodemailer/mailNodeSendCredentialsAdmin");
 
 const createUser = async (req = request, res = response) => {
   try {
@@ -29,7 +36,7 @@ const createUser = async (req = request, res = response) => {
     const salt = await bcryptjs.genSaltSync();
     user.password = await bcryptjs.hashSync(password, salt);
     await user.save();
-    sendEmailWithjet(email, name, password);
+    sendNodeCredentialsToAdmin(email, name, password);
     return res.status(201).json(user);
   } catch (error) {
     console.log(error);
@@ -156,8 +163,8 @@ const recoverAccount = async (req = request, res = response) => {
     user.save();
 
     // sendEmailForgetPassAdmin(emailUser, user.name, passRandom);
-    sendEmailForgetPassAdmin("anthonysa0813@gmail.com", user.name, passRandom);
-
+    // sendEmailForgetPassAdmin("anthonysa0813@gmail.com", user.name, passRandom);
+    sendNodeForgetAdminPass(emailUser, user.name, passRandom);
     return res.json({
       message: "Se ha enviado un correo con los siguientes pasos...",
       user,
