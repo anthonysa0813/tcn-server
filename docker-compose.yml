@@ -6,9 +6,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5050:5050"
-    volumes:
-      - .:/app
-      - /app/node_modules
     environment:
       NODE_ENV: development
     command: npm run start:dev
