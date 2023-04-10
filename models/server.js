@@ -3,6 +3,7 @@ const connectDB = require("../db/connectDB");
 const fileUpload = require("express-fileupload");
 const cors = require("cors");
 const morgan = require("morgan");
+const path = require("path");
 
 class Server {
   constructor() {
@@ -19,6 +20,7 @@ class Server {
       experience: "/api/experiences",
       knoledge: "/api/knoledge",
       contracts: "/api/contracts",
+      upload: "/api/upload",
     };
     this.middleware();
     this.router();
@@ -29,11 +31,16 @@ class Server {
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use(morgan("dev"));
+    this.app.use(
+      "/uploads/curriculums",
+      express.static(path.join(__dirname, "../uploads/curriculums"))
+    );
 
     this.app.use(
       fileUpload({
         useTempFiles: true,
         tempFileDir: "/tmp/",
+        createParentPath: true,
       })
     );
   }
@@ -52,6 +59,7 @@ class Server {
     this.app.use(this.paths.profesional, require("../routes/profesional"));
     this.app.use(this.paths.experience, require("../routes/experience"));
     this.app.use(this.paths.knoledge, require("../routes/knoledge"));
+    this.app.use(this.paths.upload, require("../routes/upload"));
   }
 
   listen() {

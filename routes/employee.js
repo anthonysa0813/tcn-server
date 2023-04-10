@@ -22,6 +22,7 @@ const {
 const existIdEmployee = require("../helpers/isValidIdEmployee");
 const validateJWT = require("../helpers/validate-jwt");
 const validationFields = require("../middlewares/validationFields");
+const { validateFile } = require("../middlewares/validationFile");
 
 const router = Router();
 
@@ -36,6 +37,7 @@ router.get("/:id", getEmployeesById);
 router.post(
   "/",
   [
+    validateFile,
     check("name", "El nombre es requerido").not().isEmpty(),
     check("surnames", "Los apellidos son requeridos").not().isEmpty(),
     check("email", "El email está en blanco ó es inválido")

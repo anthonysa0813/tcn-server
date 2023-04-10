@@ -14,6 +14,7 @@ const {
 const {
   sendNodeForgetUserPass,
 } = require("../mail_config/nodemailer/mailNodeForgetUserPassword");
+const { saveCvFile } = require("../helpers/save-cv-file");
 
 const getEmployees = async (req = request, res = response) => {
   try {
@@ -61,26 +62,27 @@ const postEmployee = async (req = request, res = response) => {
     // hashear la contraseña
     const salt = await bcrypt.genSaltSync();
     password = await bcrypt.hashSync(password, salt);
+    const pathComplete = await saveCvFile(req.files, "curriculums");
 
-    if (!req.files || Object.keys(req.files).length === 0 || !req.files.cv) {
-      res.status(400).send("No hay archivos que subir");
-      return;
-    }
+    // if (!req.files || Object.keys(req.files).length === 0 || !req.files.cv) {
+    //   res.status(400).send("No hay archivos que subir");
+    //   return;
+    // }
 
-    const { cv } = req.files;
-    // revisar si son pdf o word
-    const extensionFile = cv.name.split(".")[1]; // extension del archivo
+    // const { cv } = req.files;
+    // // revisar si son pdf o word
+    // const extensionFile = cv.name.split(".")[1]; // extension del archivo
 
-    const validatesExtensions = ["pdf"];
-    // console.log("extensionFile", extensionFile);
-    if (!validatesExtensions.includes(extensionFile)) {
-      return res.status(400).json({
-        message: `la extensión no es válida, solo aceptamos archivos ${validatesExtensions}`,
-      });
-    }
+    // const validatesExtensions = ["pdf"];
+    // // console.log("extensionFile", extensionFile);
+    // if (!validatesExtensions.includes(extensionFile)) {
+    //   return res.status(400).json({
+    //     message: `la extensión no es válida, solo aceptamos archivos ${validatesExtensions}`,
+    //   });
+    // }
 
     // guardar el archivo en cloudinary
-    const { secure_url } = await cloudinaryFunc(cv.tempFilePath);
+    // const { secure_url } = await cloudinaryFunc(cv.tempFilePath);
     // console.log("cv", cv.tempFilePath);
     // console.log("secure_url", secure_url);
     const data = {
@@ -88,7 +90,8 @@ const postEmployee = async (req = request, res = response) => {
       status: false,
       ...body,
       password,
-      cv: secure_url,
+      cv: pathComplete,
+      // cv: secure_url,
     };
 
     // guardar employee en la DB
