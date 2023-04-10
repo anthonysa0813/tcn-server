@@ -98,7 +98,7 @@ const postEmployee = async (req = request, res = response) => {
     const user = new Employee(data);
     await user.save();
     const token = await generateJWT(user._id);
-    // console.log(user);
+
     await sendEmailToActivateAccount(email, name, user._id, token);
     console.log({
       email,
