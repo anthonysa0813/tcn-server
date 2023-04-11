@@ -15,6 +15,9 @@ const {
   sendNodeForgetUserPass,
 } = require("../mail_config/nodemailer/mailNodeForgetUserPassword");
 const { saveCvFile } = require("../helpers/save-cv-file");
+const {
+  sendEmailToAccountNode,
+} = require("../mail_config/nodemailer/mailNodeActiveAccount");
 
 const getEmployees = async (req = request, res = response) => {
   try {
@@ -99,7 +102,7 @@ const postEmployee = async (req = request, res = response) => {
     await user.save();
     const token = await generateJWT(user._id);
 
-    await sendEmailToActivateAccount(email, name, user._id, token);
+    await sendEmailToAccountNode(email, name, user._id, token);
     console.log({
       email,
       name,
