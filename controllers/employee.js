@@ -1,5 +1,4 @@
 const { request, response } = require("express");
-const cloudinaryFunc = require("../lib/cloudinary");
 const Employee = require("../models/employee");
 const Service = require("../models/Service");
 const EmployeeJobStatus = require("../models/employeeJobStatus");
