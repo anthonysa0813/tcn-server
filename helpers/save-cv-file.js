@@ -19,7 +19,7 @@ const saveCvFile = (files, nameFile) => {
     }
 
     uploadPath = path.join(__dirname, "../curriculums", "", nameTemporary);
-    pdfPath = `${process.env.DOMAIN_SERVER}/curriculums/${nameTemporary}`;
+    pdfPath = `${process.env.DOMAIN_SERVER}curriculums/${nameTemporary}`;
 
     // Use the mv() method to place the file somewhere on your server
     cv.mv(uploadPath, function (err) {
