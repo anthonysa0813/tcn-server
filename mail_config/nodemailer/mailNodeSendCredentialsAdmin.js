@@ -73,7 +73,7 @@ async function sendNodeCredentialsToAdmin(email, name, password) {
           width="120"
           style="border-width:0;"
           border="0"
-          src="https://www.contactbpo.pe/img/logo.png"
+          src="https://contact.pruebaswc.com/wp-content/uploads/2022/12/logo.png"
           alt="página de contactbpo.com"
         />
       </a>
