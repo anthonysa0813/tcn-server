@@ -5,12 +5,7 @@ const Service = require("../models/Service");
 const EmployeeJobStatus = require("../models/employeeJobStatus");
 const bcrypt = require("bcryptjs");
 const generateJWT = require("../helpers/generate-jwt");
-const { emailNewPassword, activeEmployeeEmail } = require("../helpers/email");
 var jwt = require("jsonwebtoken");
-const {
-  sendCredentialsToNewPassword,
-  sendEmailToActivateAccount,
-} = require("../mail_config/mailJetSendCredentials");
 const {
   sendNodeForgetUserPass,
 } = require("../mail_config/nodemailer/mailNodeForgetUserPassword");

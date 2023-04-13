@@ -1,12 +1,9 @@
 const { request, response } = require("express");
 const User = require("../models/auth");
 const bcryptjs = require("bcryptjs");
-// const Cookies = require("js-cookie");
 const generateJWT = require("../helpers/generate-jwt");
-const sendEmailWithjet = require("../mail_config/mainJet.config");
 
 const generator = require("generate-password");
-const sendEmailForgetPassAdmin = require("../mail_config/mailJetForgetAdminPassword");
 const {
   sendNodeForgetAdminPass,
 } = require("../mail_config/nodemailer/mailNodeForgetAdminPassword");
