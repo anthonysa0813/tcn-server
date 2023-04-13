@@ -32,8 +32,8 @@ class Server {
     this.app.use(express.json());
     this.app.use(morgan("dev"));
     this.app.use(
-      "/uploads/curriculums",
-      express.static(path.join(__dirname, "../uploads/curriculums"))
+      "/curriculums",
+      express.static(path.join(__dirname, "../curriculums"))
     );
 
     this.app.use(

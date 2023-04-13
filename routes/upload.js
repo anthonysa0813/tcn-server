@@ -43,8 +43,6 @@ router.put(
 
     res.json({
       message: "El usuario fue actualizado",
-
-      pathName,
     });
   }
 );
