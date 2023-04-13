@@ -34,11 +34,11 @@ router.put(
     const idCv = user.cv.split("uploads");
     user.cv = await saveCvFile(req.files, "curriculums");
     // borrar el anterior cv
-    const pathName = path.join(__dirname, "../uploads", idCv[1]);
+    // const pathName = path.join(__dirname, "../uploads", idCv[1]);
 
-    if (fs.existsSync(pathName)) {
-      fs.unlinkSync(pathName);
-    }
+    // if (fs.existsSync(pathName)) {
+    //   fs.unlinkSync(pathName);
+    // }
     await user.save();
 
     res.json({
