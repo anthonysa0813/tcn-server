@@ -8,6 +8,7 @@ const path = require("path");
 class Server {
   constructor() {
     this.app = express();
+    this.PORT = 5050;
     this.paths = {
       auth: "/api/auth",
       authEmployee: "/api/auth/employee",
@@ -32,8 +33,8 @@ class Server {
     this.app.use(express.json());
     this.app.use(morgan("dev"));
     this.app.use(
-      "/curriculums",
-      express.static(path.join(__dirname, "../curriculums"))
+      "/uploads/curriculums",
+      express.static(path.join(__dirname, "../uploads/curriculums"))
     );
 
     this.app.use(
@@ -63,7 +64,7 @@ class Server {
   }
 
   listen() {
-    this.app.listen(5050, () => {
+    this.app.listen(this.PORT, () => {
       console.log(`the app is listening in the port ${5050}`);
     });
   }

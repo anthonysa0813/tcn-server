@@ -27,11 +27,19 @@ const { validateFile } = require("../middlewares/validationFile");
 const router = Router();
 
 // filter: busca employees por el estado de trabajo del usuario ("DESCARTADO, SELECCIONADO, CONTRATAD")
-router.get("/search", searchEmployee);
+router.get("/search", [validateJWT, validationFields], searchEmployee);
 // trae todos los employees
-router.get("/", [validationFields], getEmployees);
+router.get("/", [validateJWT, validationFields], getEmployees);
 // traer un employee by Id
-router.get("/:id", getEmployeesById);
+router.get(
+  "/:id",
+  [
+    validateJWT,
+    check("id", "el id debe de ser un mongoId").isMongoId(),
+    validationFields,
+  ],
+  getEmployeesById
+);
 
 // crea un employee
 router.post(
@@ -50,12 +58,24 @@ router.post(
   postEmployee
 );
 
-router.put("/activate/:idEmployee", activeEmployee);
+router.put(
+  "/activate/:idEmployee",
+  [
+    validateJWT,
+    [
+      validateJWT,
+      check("idEmployee", "el id debe de ser un mongoId").isMongoId(),
+      validationFields,
+    ],
+  ],
+  activeEmployee
+);
 
 // actualiza el status del employee
 router.put(
   "/:id",
   [
+    validateJWT,
     check("id", "el id no es un id válido").isMongoId(),
     check("id", "el id no existe").custom(existIdEmployee),
     validationFields,
@@ -67,6 +87,7 @@ router.put(
 router.delete(
   "/:id",
   [
+    validateJWT,
     check("id", "el id no es un id válido").isMongoId(),
     check("id", "el id no existe").custom(existIdEmployee),
     validationFields,
@@ -75,12 +96,24 @@ router.delete(
 );
 
 // agregar un nuevo servicio
-router.post("/:idEmployee/:idService", addServiceToEmployee);
+router.post(
+  "/:idEmployee/:idService",
+  [validateJWT, validationFields],
+  addServiceToEmployee
+);
 
 // activar al usuario (employee)
 
 // show services by idEmployee
-router.get("/:id", showServices);
+router.get(
+  "/:id",
+  [
+    validateJWT,
+    check("id", "Debe de ser un mongo id").isMongoId(),
+    validationFields,
+  ],
+  showServices
+);
 
 // olvidé mi contraseña
 router.post("/forget-password", sendEmailForgetPassword);
@@ -97,10 +130,22 @@ router.post("/status-job", addEmployeeJobStatus);
 // trae información sobre ese empleador
 router.get(
   "/get-applications-jobs/:idEmployee",
+  [
+    validateJWT,
+    check("idEmployee", "debe de ser un mongo id").isMongoId(),
+    validationFields,
+  ],
   getAllApplicationsJobByEmployeeId
 );
 
 // modificar el status job
-router.put("/status-job/:idJobStatus", updateEmployeeJobStatus);
+router.put(
+  "/status-job/:idJobStatus",
+  [
+    check("idJobStatus", "debe de ser un mongo id").isMongoId(),
+    validationFields,
+  ],
+  updateEmployeeJobStatus
+);
 
 module.exports = router;
