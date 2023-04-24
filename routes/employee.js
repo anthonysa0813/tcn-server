@@ -61,12 +61,8 @@ router.post(
 router.put(
   "/activate/:idEmployee",
   [
-    validateJWT,
-    [
-      validateJWT,
-      check("idEmployee", "el id debe de ser un mongoId").isMongoId(),
-      validationFields,
-    ],
+    check("idEmployee", "el id debe de ser un mongoId").isMongoId(),
+    validationFields,
   ],
   activeEmployee
 );
@@ -75,7 +71,6 @@ router.put(
 router.put(
   "/:id",
   [
-    validateJWT,
     check("id", "el id no es un id válido").isMongoId(),
     check("id", "el id no existe").custom(existIdEmployee),
     validationFields,
