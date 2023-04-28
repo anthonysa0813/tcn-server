@@ -69,7 +69,7 @@ async function sendEmailToAccountNode(email, name, id, token) {
     <table>
   <tr>
     <td style="mso-margin-top-alt:10px; mso-margin-bottom-alt:10px;">
-         <a href="https://www.contactbpo.pe/" target="_blank">
+         <a href="" target="_blank">
         <img
           width="120"
           style="border-width:0;"
