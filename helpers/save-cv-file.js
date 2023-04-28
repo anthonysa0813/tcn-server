@@ -18,8 +18,13 @@ const saveCvFile = (files, nameFile) => {
       return reject("La extensión no es permitida");
     }
 
-    uploadPath = path.join(__dirname, "../curriculums", "", nameTemporary);
-    pdfPath = `${process.env.DOMAIN_SERVER}curriculums/${nameTemporary}`;
+    uploadPath = path.join(
+      __dirname,
+      "../uploads/curriculums",
+      "",
+      nameTemporary
+    );
+    pdfPath = `${process.env.SERVER_URL}uploads/curriculums/${nameTemporary}`;
 
     // Use the mv() method to place the file somewhere on your server
     cv.mv(uploadPath, function (err) {

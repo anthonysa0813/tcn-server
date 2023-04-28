@@ -16,12 +16,16 @@ const validationFields = require("../../middlewares/validationFields");
 const router = Router();
 
 // devuelve la lista de todos los usuarios registrados
-router.get("/", getUsers);
+router.get("/", [validateJWT, validationFields], getUsers);
 
 // crear un nuevo usuario
 router.post(
   "/register",
-  [check("email", "El email es incorrecto").isEmail(), validationFields],
+  [
+    validateJWT,
+    check("email", "El email es incorrecto").isEmail(),
+    validationFields,
+  ],
   createUser
 );
 
@@ -54,7 +58,7 @@ router.delete(
 );
 
 // search Auth
-router.get("/search/:email", searchAuth);
+router.get("/search/:email", [validateJWT, validationFields], searchAuth);
 
 // recuperación de cuenta
 router.post("/recover-account/:emailUser", recoverAccount);

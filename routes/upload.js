@@ -7,6 +7,7 @@ const User = require("../models/employee");
 const { validateFile } = require("../middlewares/validationFile");
 const fs = require("fs");
 const path = require("path");
+const validateJWT = require("../helpers/validate-jwt");
 
 router.post("/", validateFile, async (req, res) => {
   const pathComplete = await saveCvFile(req.files, "curriculums");
@@ -20,6 +21,7 @@ router.put(
   "/:id",
   [
     validateFile,
+    validateJWT,
     check("id", "El id debe de ser un mongo Id").isMongoId(),
     validationFields,
   ],
