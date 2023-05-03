@@ -4,6 +4,7 @@ const {
   deleteKnoledge,
   getAllKnowledge,
   getAllKnowledgeByFilter,
+  getSkillByEmployee,
 } = require("../controllers/knoledge");
 const validationFields = require("../middlewares/validationFields");
 const validateJWT = require("../helpers/validate-jwt");
@@ -46,4 +47,15 @@ router.delete(
   deleteKnoledge
 );
 
+router.get(
+  "/:idEmployee",
+  [
+    validateJWT,
+    check("idKnoledge", "idKnoledge debe de ser un mongo id").isMongoId(),
+    validationFields,
+  ],
+  getSkillByEmployee
+);
+
 module.exports = router;
+

@@ -28,6 +28,10 @@ const createKnoledge = async (req = request, res = response) => {
     level: body.level,
     employee: idEmployee,
   });
+
+  employee.skills = [...employee.skills, knoledge._id];
+  employee.save();
+
   await knoledge.save();
 
   return res.json(knoledge);
@@ -56,9 +60,21 @@ const getAllKnowledgeByFilter = async (req = request, res = response) => {
   }
 };
 
+const getSkillByEmployee = async (req = request, res = response) => {
+  try {
+    const { idEmployee } = req.params;
+    const employee = await Employee.find().where({ employee: idEmployee });
+    return res.json(employee);
+  } catch (error) {
+    return res.json({ message: "Hubo un error" });
+  }
+};
+
 module.exports = {
   createKnoledge,
   deleteKnoledge,
   getAllKnowledge,
   getAllKnowledgeByFilter,
+  getSkillByEmployee,
 };
+

@@ -206,7 +206,10 @@ const logingEmployee = async (req = request, res = response) => {
     const { body } = req;
     const { email, password } = body;
     // verificar si el usuario existe
-    const employee = await Employee.findOne({ email: email });
+    const employee = await Employee.findOne({ email: email }).populate(
+      "service",
+      "experiences"
+    );
     if (!employee) {
       return res.status(400).json({ message: "No Existe el usuario" });
     }
@@ -238,7 +241,11 @@ const getEmployeesById = async (req = request, res = response) => {
     if (!id) {
       return res.status(400).json({ message: "Es necesario que mandes el Id" });
     }
-    const employee = await Employee.findById(id).populate("service");
+    const employee = await Employee.findById(id)
+      .populate("service")
+      .populate("experiences")
+      .populate("languages")
+      .populate("skills");
     return res.status(200).json(employee);
   } catch (error) {
     console.log(error);
@@ -402,9 +409,14 @@ const updateEmployeeJobStatus = async (req = request, res = response) => {
   try {
     const { idJobStatus } = req.params;
     const { status } = req.body;
-    const employeeJobStatus = await EmployeeJobStatus.findById(idJobStatus);
-    employeeJobStatus.status = status;
-    employeeJobStatus.save();
+    const employeeJobStatus = await EmployeeJobStatus.find().where({
+      service: idJobStatus,
+    });
+
+    console.log(employeeJobStatus[0]);
+    employeeJobStatus[0].status = status;
+    employeeJobStatus[0].save();
+
     return res.json({ message: "se ha modificado" });
   } catch (error) {
     return res.status(500).json({
@@ -462,6 +474,19 @@ const searchEmployee = async (req = request, res = response) => {
   }
 };
 
+const createRelationJobEmployeeStatus = async (
+  req = request,
+  res = response
+) => {
+  try {
+    const { idEmployee, idService, value } = req.body;
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getEmployees,
   postEmployee,
@@ -480,3 +505,4 @@ module.exports = {
   getAllApplicationsJobByEmployeeId,
   updateEmployeeJobStatus,
 };
+

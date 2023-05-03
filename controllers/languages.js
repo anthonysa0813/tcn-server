@@ -36,6 +36,8 @@ const createLang = async (req = request, res = response) => {
       levelListen: body.levelListen,
     });
     lang.save();
+    employee.languages = [...employee.languages, lang._id];
+    employee.save();
     return res.json(lang);
   } catch (error) {
     console.log(error);
@@ -152,3 +154,4 @@ module.exports = {
   getUniqueLang,
   searchLanguagesByFilter,
 };
+

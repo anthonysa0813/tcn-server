@@ -19,9 +19,8 @@ const saveCvFile = (files, nameFile) => {
     }
 
     uploadPath = path.join(
-      __dirname,
-      "../uploads/curriculums",
-      "",
+	__dirname,
+      "../uploads/curriculums/",
       nameTemporary
     );
     pdfPath = `${process.env.SERVER_URL}uploads/curriculums/${nameTemporary}`;

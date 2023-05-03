@@ -38,6 +38,9 @@ const createExperience = async (req = request, res = response) => {
     employee: idEmployee,
   });
 
+  employee.experiences = [...employee.experiences, newExperience._id];
+  employee.save();
+
   await newExperience.save();
 
   res.json(newExperience);
@@ -107,3 +110,4 @@ module.exports = {
   deleteExperience,
   getUniqueExperience,
 };
+
