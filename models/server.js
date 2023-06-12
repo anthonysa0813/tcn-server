@@ -8,7 +8,7 @@ const path = require("path");
 class Server {
   constructor() {
     this.app = express();
-    this.PORT = 5050;
+    this.PORT = 6060;
     this.paths = {
       auth: "/api/auth",
       authEmployee: "/api/auth/employee",

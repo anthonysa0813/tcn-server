@@ -135,7 +135,7 @@ router.get(
 
 // modificar el status job
 router.put(
-  "/status-job/:idJobStatus",
+  "/status-unique-job/:idJobStatus/:idEmployee",
   [
     check("idJobStatus", "debe de ser un mongo id").isMongoId(),
     validationFields,
